@@ -56,6 +56,7 @@ class PlayerStats {
         $this->kick = $kick;
         $this->control = $control;
         $this->pressure = $pressure;
+        $this->physical = $physical;
         $this->agility = $agility;
         $this->intelligence = $intelligence;
         $this->technique = $technique;
@@ -162,13 +163,38 @@ class PlayerStats {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
+    public function toArray(): array {
+        return array(
+            $this->id,
+            $this->kick,
+            $this->control,
+            $this->pressure,
+            $this->physical,
+            $this->agility,
+            $this->intelligence,
+            $this->technique
+        );
+    }
+
+    public function total(): int {
+        $sum = 0;
+
+        foreach ($this as $stat => $value) {
+            if ($value != null) {
+                $sum += $value;
+            }
+        }
+
+        return $sum;
+    }
+
     // TODO: compute AT Shoot, AT Focus, ...
 
     // -------------------------------------------------------------------------
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function from_array(array $entity): PlayerStats {
+    public static function fromArray(array $entity): PlayerStats {
         return new PlayerStats(
             $entity['id'],
             $entity['kick'],

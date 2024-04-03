@@ -41,8 +41,8 @@ enum HissatsuType : string {
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function from_string(string $value): ?HissatsuType {
-        return match ($value) {
+    public static function fromString(string $value): ?HissatsuType {
+        return match (strtoupper($value)) {
             'CATCH' => HissatsuType::CATCH,
             'DEFENSE' => HissatsuType::DEFENSE,
             'OFFENSE' => HissatsuType::OFFENSE,

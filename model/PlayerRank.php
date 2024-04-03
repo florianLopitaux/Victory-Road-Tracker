@@ -42,8 +42,8 @@ enum PlayerRank : string {
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function from_string(string $value): ?PlayerRank {
-        return match ($value) {
+    public static function fromString(string $value): ?PlayerRank {
+        return match (strtoupper($value)) {
             'NORMAL' => PlayerRank::NORMAL,
             'RARE' => PlayerRank::RARE,
             'ADVANCED' => PlayerRank::ADVANCED,

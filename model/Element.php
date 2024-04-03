@@ -41,8 +41,8 @@ enum Element : string {
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function from_string(string $value): ?Element {
-        return match ($value) {
+    public static function fromString(string $value): ?Element {
+        return match (strtoupper($value)) {
             'EARTH' => Element::EARTH,
             'FIRE' => Element::FIRE,
             'WIND' => Element::WIND,
