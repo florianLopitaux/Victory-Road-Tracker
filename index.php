@@ -29,12 +29,30 @@ This banner notice must not be removed.
 -------------------------------------------------------------------------
  */
 
-// Loads the .ini file that contains the database identifiers
-$config = parse_ini_file('config.ini');
+// parse the url to get the uri parameters and know which methods called
+$uriParameters = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+array_shift($uriParameters); // remove first element always empty
 
-// file doesn't found or not parsable, should not happen
-if (!$config) {
-    http_response_code(500);
-    echo "<h1>Server internal problem !</h1>";
-    die();
+// check if the request is for the API or the website
+if (sizeof($uriParameters) > 0 && $uriParameters[0] === 'api') {
+    header('Content-Type: application/json');
+
+    // Loads the .ini file that contains the database identifiers
+    $config = parse_ini_file('config.ini');
+
+    // file doesn't found or not parsable, should not happen
+    if (!$config) {
+        http_response_code(500);
+        echo json_encode(array('response' => 'Internal problem'));
+        die();
+    }
 }
+
+// the request is for the website
+if (sizeof($uriParameters) === 0) {
+    $uriParameters[] = "Home";
+} else {
+    // transform the first letter to upper to match with controllers name
+    $uriParameters[0] = strtoupper(substr($uriParameters[0], 0, 1)) . substr($uriParameters[0], 1);
+}
+
