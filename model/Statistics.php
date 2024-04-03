@@ -1,6 +1,6 @@
 <?php
 /**
-@file     model.Element.php
+@file     model.Statistics.php
 @author   Florian Lopitaux
 @version  0.1
 @summary  Class that represents the statistics of a character.
@@ -31,7 +31,7 @@ This banner notice must not be removed.
 
 namespace model;
 
-class PlayerStats {
+class Statistics {
 
     // -------------------------------------------------------------------------
     // FIELDS
@@ -196,8 +196,8 @@ class PlayerStats {
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function fromArray(array $entity): PlayerStats {
-        return new PlayerStats(
+    public static function fromArray(array $entity): Statistics {
+        return new Statistics(
             $entity['id'],
             $entity['kick'],
             $entity['control'],

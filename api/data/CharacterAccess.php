@@ -33,9 +33,13 @@ namespace apiData;
 
 require_once 'api/data/DataAccess.php';
 
-use model\{Character, Element, Hissatsu, PlayerRank, PlayerStats};
+use model\{Character, Element, Hissatsu, PlayerRank, Statistics};
 require_once 'model/Character.php';
 require_once 'model/Element.php';
+require_once 'model/PlayerRank.php';
+require_once 'model/Hissatsu.php';
+require_once 'model/Statistics.php';
+
 
 class CharacterAccess extends DataAccess {
 
@@ -86,14 +90,14 @@ class CharacterAccess extends DataAccess {
 
     private function setCharacterStats(Character $character): void {
         // send sql request
-        $this->prepareQuery('SELECT * FROM Statistique, PlayerStats JOIN PlayerStats ON Statistique.id = PlayerStats.idStats WHERE PlayerStats.character_name = ?');
+        $this->prepareQuery('SELECT * FROM Statistique, Statistic JOIN Statistic ON Statistique.id = Statistic.idStats WHERE Statistic.character_name = ?');
         $this->executeQuery(array($character->getName()));
 
         // get the response
         $result = $this->getQueryResult();
 
         foreach ($result as $entity) {
-            $character->setStats(PlayerRank::fromString($entity['player_rank']), PlayerStats::fromArray($entity));
+            $character->setStats(PlayerRank::fromString($entity['player_rank']), Statistics::fromArray($entity));
         }
     }
 }

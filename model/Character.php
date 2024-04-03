@@ -33,7 +33,7 @@ namespace model;
 
 require_once 'model/Element.php';
 require_once 'model/PlayerRank.php';
-require_once 'model/PlayerStats.php';
+require_once 'model/Statistics.php';
 require_once 'model/Hissatsu.php';
 
 class Character {
@@ -107,7 +107,7 @@ class Character {
 
     // -------------------------------------------------------------------------
 
-    public function getStats(PlayerRank $rank = null): null | array | PlayerStats {
+    public function getStats(PlayerRank $rank = null): null | array | Statistics {
         if ($rank == null) {
             return $this->stats;
         } else {
@@ -126,7 +126,7 @@ class Character {
 
     // -------------------------------------------------------------------------
 
-    public function setStats(PlayerRank $rank, PlayerStats $stats): void {
+    public function setStats(PlayerRank $rank, Statistics $stats): void {
         $this->stats[$rank->name] = $stats;
     }
 }

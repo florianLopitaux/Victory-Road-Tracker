@@ -1,9 +1,9 @@
 <?php
 /**
-@file     model/PlayerRank.php
+@file     model.StuffCategory.php
 @author   Florian Lopitaux
 @version  0.1
-@summary  Enumeration class that contains the different grade or rank of a character in the game.
+@summary  Enumeration class that contains the categories of stuff that can be attached to a character.
 
 -------------------------------------------------------------------------
 
@@ -31,24 +31,22 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum PlayerRank {
-    case NORMAL;
-    case RARE;
-    case ADVANCED;
-    case TOP;
-    case LEGENDARY;
+enum StuffCategory {
+    case BOOTS;
+    case BRACELET;
+    CASE PENDANT;
+    case SPECIAL;
 
     // -------------------------------------------------------------------------
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function fromString(string $value): ?PlayerRank {
-        return match (strtoupper($value)) {
-            'NORMAL' => PlayerRank::NORMAL,
-            'RARE' => PlayerRank::RARE,
-            'ADVANCED' => PlayerRank::ADVANCED,
-            'TOP' => PlayerRank::TOP,
-            'LEGENDARY' => PlayerRank::LEGENDARY,
+    public static function fromString(string $value): StuffCategory | null {
+        return match(strtoupper($value)) {
+            'BOOTS' => StuffCategory::BOOTS,
+            'BRACELET' => StuffCategory::BRACELET,
+            'PENDANT' => StuffCategory::PENDANT,
+            'SPECIAL' => StuffCategory::SPECIAL,
             default => null
         };
     }

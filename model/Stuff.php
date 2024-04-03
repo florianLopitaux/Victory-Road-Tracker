@@ -1,9 +1,9 @@
 <?php
 /**
-@file     model.Hissatsu.php
+@file     model.Stuff.php
 @author   Florian Lopitaux
 @version  0.1
-@summary  Class that represents a hissatsu technique.
+@summary  Class that represents an item that can be attached to a character in the game.
 
 -------------------------------------------------------------------------
 
@@ -31,30 +31,27 @@ This banner notice must not be removed.
 
 namespace model;
 
-require_once 'model/HissatsuType.php';
-require_once 'model/Element.php';
+require_once 'model/StuffCategory.php';
 
-class Hissatsu {
+class Stuff {
 
     // -------------------------------------------------------------------------
     // FIELDS
     // -------------------------------------------------------------------------
 
     private string $name;
-    private HissatsuType $type;
-    private Element $element;
-    private int $power;
+    private StuffCategory $category;
+    private Statistics $stats;
 
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
     // -------------------------------------------------------------------------
 
-    public function __construct(string $name, HissatsuType $type, Element $element, int $power) {
+    public function __construct(string $name, StuffCategory $category, Statistics $stats) {
         $this->name = $name;
-        $this->type = $type;
-        $this->element = $element;
-        $this->power = $power;
+        $this->category = $category;
+        $this->stats = $stats;
     }
 
 
@@ -66,22 +63,12 @@ class Hissatsu {
         return $this->name;
     }
 
-    // -------------------------------------------------------------------------
-
-    public function getType(): HissatsuType {
-        return $this->type;
+    public function getCategory(): StuffCategory  {
+        return $this->category;
     }
 
-    // -------------------------------------------------------------------------
-
-    public function getElement(): Element {
-        return $this->element;
-    }
-
-    // -------------------------------------------------------------------------
-
-    public function getPower(): int {
-        return $this->power;
+    public function getStats(): Statistics {
+        return $this->stats;
     }
 
 
@@ -89,34 +76,7 @@ class Hissatsu {
     // SETTERS
     // -------------------------------------------------------------------------
 
-    public function setPower(int $power): void {
-        $this->power = $power;
-    }
-
-
-    // -------------------------------------------------------------------------
-    // PUBLIC METHODS
-    // -------------------------------------------------------------------------
-
-    public function toArray(): array {
-        return array(
-            $this->name,
-            $this->type,
-            $this->element,
-            $this->power
-        );
-    }
-
-    // -------------------------------------------------------------------------
-    // STATIC METHODS
-    // -------------------------------------------------------------------------
-
-    public static function fromArray(array $entity): Hissatsu {
-        return new Hissatsu(
-            $entity['name'],
-            HissatsuType::fromString($entity['type']),
-            Element::fromString($entity['element']),
-            $entity['power']
-        );
+    public function setStats(Statistics $stats): void {
+        $this->stats = $stats;
     }
 }
