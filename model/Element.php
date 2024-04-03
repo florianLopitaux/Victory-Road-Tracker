@@ -31,11 +31,11 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum Element : string {
-    case EARTH = 'EARTH';
-    case FIRE = 'FIRE';
-    case WIND = 'WIND';
-    case WOOD = 'WOOD';
+enum Element {
+    case EARTH;
+    case FIRE;
+    case WIND;
+    case WOOD;
 
     // -------------------------------------------------------------------------
     // STATIC METHODS

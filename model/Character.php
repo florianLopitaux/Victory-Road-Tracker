@@ -1,9 +1,9 @@
 <?php
 /**
-@file     model.Hissatsu.php
+@file     model.Character.php
 @author   Florian Lopitaux
 @version  0.1
-@summary  Class that represents a hissatsu technique.
+@summary  Class that represents a character in the game.
 
 -------------------------------------------------------------------------
 
@@ -31,30 +31,41 @@ This banner notice must not be removed.
 
 namespace model;
 
-require_once 'model/HissatsuType.php';
 require_once 'model/Element.php';
+require_once 'model/PlayerRank.php';
+require_once 'model/PlayerStats.php';
+require_once 'model/Hissatsu.php';
 
-class Hissatsu {
+class Character {
 
     // -------------------------------------------------------------------------
     // FIELDS
     // -------------------------------------------------------------------------
 
     private string $name;
-    private HissatsuType $type;
     private Element $element;
-    private int $power;
+    private int $level;
+    private array $hissatsu;
+    private array $stats;
 
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
     // -------------------------------------------------------------------------
 
-    public function __construct(string $name, HissatsuType $type, Element $element, int $power) {
+    public function __construct(string $name, Element $element, int $level) {
         $this->name = $name;
-        $this->type = $type;
         $this->element = $element;
-        $this->power = $power;
+        $this->level = $level;
+
+        $this->hissatsu = array();
+        $this->stats = array(
+            PlayerRank::NORMAL->name => null,
+            PlayerRank::RARE->name => null,
+            PlayerRank::ADVANCED->name => null,
+            PlayerRank::TOP->name => null,
+            PlayerRank::LEGENDARY->name => null,
+        );
     }
 
 
@@ -68,20 +79,40 @@ class Hissatsu {
 
     // -------------------------------------------------------------------------
 
-    public function getType(): HissatsuType {
-        return $this->type;
-    }
-
-    // -------------------------------------------------------------------------
-
     public function getElement(): Element {
         return $this->element;
     }
 
     // -------------------------------------------------------------------------
 
-    public function getPower(): int {
-        return $this->power;
+    public function getLevel(): int {
+        return $this->level;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function getHissatsu(string $hissatsuName = null): null | array {
+        if ($hissatsuName == null) {
+            return $this->hissatsu;
+        } else {
+            foreach ($this->hissatsu as $values) {
+                if ($hissatsuName === $values[1]->getName()) {
+                    return $values;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function getStats(PlayerRank $rank = null): null | array | PlayerStats {
+        if ($rank == null) {
+            return $this->stats;
+        } else {
+            return $this->stats[$rank->name];
+        }
     }
 
 
@@ -89,34 +120,13 @@ class Hissatsu {
     // SETTERS
     // -------------------------------------------------------------------------
 
-    public function setPower(int $power): void {
-        $this->power = $power;
-    }
-
-
-    // -------------------------------------------------------------------------
-    // PUBLIC METHODS
-    // -------------------------------------------------------------------------
-
-    public function toArray(): array {
-        return array(
-            $this->name,
-            $this->type,
-            $this->element,
-            $this->power
-        );
+    public function addHissatsu(Hissatsu $hissatsu, int $level = null): void {
+        $this->hissatsu[] = array($level, $hissatsu);
     }
 
     // -------------------------------------------------------------------------
-    // STATIC METHODS
-    // -------------------------------------------------------------------------
 
-    public function fromArray(array $entity): Hissatsu {
-        return new Hissatsu(
-            $entity['name'],
-            $entity['type'],
-            $entity['element'],
-            $entity['power']
-        );
+    public function setStats(PlayerRank $rank, PlayerStats $stats): void {
+        $this->stats[$rank->name] = $stats;
     }
 }

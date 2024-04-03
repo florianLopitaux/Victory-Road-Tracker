@@ -31,12 +31,12 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum PlayerRank : string {
-    case NORMAL = 'NORMAL';
-    case RARE = 'RARE';
-    case ADVANCED = 'ADVANCED';
-    case TOP = 'TOP';
-    case LEGENDARY = 'LEGENDARY';
+enum PlayerRank {
+    case NORMAL;
+    case RARE;
+    case ADVANCED;
+    case TOP;
+    case LEGENDARY;
 
     // -------------------------------------------------------------------------
     // STATIC METHODS

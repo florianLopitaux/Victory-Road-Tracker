@@ -31,11 +31,11 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum HissatsuType : string {
-    case CATCH = 'CATCH';
-    case DEFENSE = 'DEFENSE';
-    case OFFENSE = 'OFFENSE';
-    case SHOOT = 'SHOOT';
+enum HissatsuType {
+    case CATCH;
+    case DEFENSE;
+    case OFFENSE;
+    case SHOOT;
 
     // -------------------------------------------------------------------------
     // STATIC METHODS
