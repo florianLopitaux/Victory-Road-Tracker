@@ -31,7 +31,7 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum Element: string {
+enum Element : string {
     case EARTH = 'EARTH';
     case FIRE = 'FIRE';
     case WIND = 'WIND';

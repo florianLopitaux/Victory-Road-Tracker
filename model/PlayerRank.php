@@ -1,9 +1,9 @@
 <?php
 /**
-@file     model/HissatsuType.php
+@file     model/PlayerRank.php
 @author   Florian Lopitaux
 @version  0.1
-@summary  Enumeration class that contains the different types of the hissatsu techniques.
+@summary  Enumeration class that contains the different grade or rank of a character in the game.
 
 -------------------------------------------------------------------------
 
@@ -31,22 +31,24 @@ This banner notice must not be removed.
 
 namespace model;
 
-enum HissatsuType : string {
-    case CATCH = 'CATCH';
-    case DEFENSE = 'DEFENSE';
-    case OFFENSE = 'OFFENSE';
-    case SHOOT = 'SHOOT';
+enum PlayerRank : string {
+    case NORMAL = 'NORMAL';
+    case RARE = 'RARE';
+    case ADVANCED = 'ADVANCED';
+    case TOP = 'TOP';
+    case LEGENDARY = 'LEGENDARY';
 
     // -------------------------------------------------------------------------
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public static function from_string(string $value): ?HissatsuType {
+    public static function from_string(string $value): ?PlayerRank {
         return match ($value) {
-            'CATCH' => HissatsuType::CATCH,
-            'DEFENSE' => HissatsuType::DEFENSE,
-            'OFFENSE' => HissatsuType::OFFENSE,
-            'SHOOT' => HissatsuType::SHOOT,
+            'NORMAL' => PlayerRank::NORMAL,
+            'RARE' => PlayerRank::RARE,
+            'ADVANCED' => PlayerRank::ADVANCED,
+            'TOP' => PlayerRank::TOP,
+            'LEGENDARY' => PlayerRank::LEGENDARY,
             default => null,
         };
     }
