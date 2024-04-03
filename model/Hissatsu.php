@@ -111,7 +111,7 @@ class Hissatsu {
     // STATIC METHODS
     // -------------------------------------------------------------------------
 
-    public function fromArray(array $entity): Hissatsu {
+    public static function fromArray(array $entity): Hissatsu {
         return new Hissatsu(
             $entity['name'],
             $entity['type'],
