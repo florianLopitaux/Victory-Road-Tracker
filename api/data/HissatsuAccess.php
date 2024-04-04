@@ -32,6 +32,7 @@ This banner notice must not be removed.
 namespace apiData;
 
 require_once 'api/data/DataAccess.php';
+require_once 'api/data/CharacterAccess.php';
 
 use model\Hissatsu;
 require_once 'model/Hissatsu.php';
@@ -78,20 +79,58 @@ final class HissatsuAccess extends DataAccess {
 
     // -------------------------------------------------------------------------
 
-    public function getHissatsuOwners(string $hissatsuName): array {
+    public function getHissatsuOwners(CharacterAccess $characterAccess, string $hissatsuName): array {
         $characters = array();
 
         // send sql request
-        $this->prepareQuery('SELECT Character.name FROM Character JOIN Owned ON Character.name = Owned.character_name WHERE Owned.hissatsu_name = ?');
+        $this->prepareQuery('SELECT Character.name FROM Character JOIN Master ON Character.name = Master.character_name WHERE Master.hissatsu_name = ?');
         $this->executeQuery(array($hissatsuName));
 
         // get the response
         $result = $this->getQueryResult();
 
         foreach ($result as $entity) {
-            $characters[] = $entity['name'];
+            $characters[] = $characterAccess->getCharacter($entity['name']);
         }
 
         return $characters;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function insertHissatsu(Hissatsu $hissatsu): bool {
+        // check if the hissatsu already exists
+        $this->prepareQuery('SELECT Count(*) FROM Hissatsu WHERE name = ?');
+        $this->executeQuery(array($hissatsu->getName()));
+
+        if (count($this->getQueryResult()) > 0) {
+            return false;
+        }
+
+        // send sql request
+        $this->prepareQuery('INSERT INTO Hissatsu VALUES (?, ?, ?, ?)');
+        $this->executeQuery($hissatsu->toArray());
+
+        $this->closeQuery();
+        return true;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function deleteHissatsu(string $hissatsuName): bool {
+        // check if the hissatsu exists
+        $this->prepareQuery('SELECT Count(*) FROM Hissatsu WHERE name = ?');
+        $this->executeQuery(array($hissatsuName));
+
+        if (count($this->getQueryResult()) === 0) {
+            return false;
+        }
+
+        // send sql server
+        $this->prepareQuery('DELETE FROM Hissatsu WHERE name = ?');
+        $this->executeQuery(array($hissatsuName));
+
+        $this->closeQuery();
+        return true;
     }
 }

@@ -101,8 +101,8 @@ class Hissatsu {
     public function toArray(): array {
         return array(
             $this->name,
-            $this->type,
-            $this->element,
+            $this->type->name,
+            $this->element->name,
             $this->power
         );
     }
