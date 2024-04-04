@@ -126,11 +126,16 @@ final class HissatsuAccess extends DataAccess {
             return false;
         }
 
-        // send sql server
+        // delete hissatsu entity
         $this->prepareQuery('DELETE FROM Hissatsu WHERE name = ?');
         $this->executeQuery(array($hissatsuName));
-
         $this->closeQuery();
+
+        // delete relations with Character table
+        $this->prepareQuery('DELETE FROM Master WHERE hisstasu_name = ?');
+        $this->executeQuery(array($hissatsuName));
+        $this->closeQuery();
+
         return true;
     }
 }

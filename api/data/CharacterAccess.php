@@ -68,6 +68,86 @@ class CharacterAccess extends DataAccess {
         }
     }
 
+    // -------------------------------------------------------------------------
+
+    public function getAllCharacters(): array {
+        $characters = array();
+
+        // send sql request
+        $this->prepareQuery('SELECT * FROM Character');
+        $this->executeQuery(array());
+
+        // get the response
+        $result = $this->getQueryResult();
+
+        foreach ($result as $entity) {
+            $current = new Character($entity['name'], Element::fromString($entity['element']), $entity['level']);
+            $this->setCharacterHissatsu($current);
+            $this->setCharacterStats($current);
+
+            $characters[] = $current;
+        }
+
+        return $characters;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function insertCharacter(Character $character): bool {
+        // check if the character already exists
+        $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');
+        $this->executeQuery(array($character->getName()));
+
+        if (count($this->getQueryResult()) > 0) {
+            return false;
+        }
+
+        // send sql request
+        $this->prepareQuery('INSERT INTO Character VALUES (?, ?, ?)');
+        $this->executeQuery(array($character->getName(), $character->getElement()->name, $character->getLevel()));
+        $this->closeQuery();
+
+        foreach ($character->getHissatsu() as $hissatsuData) {
+            $this->prepareQuery('INSERT INTO Master VALUES (?, ?, ?)');
+            $this->executeQuery(array($character->getName(), $hissatsuData[1]->getName(), $hissatsuData[0]));
+            $this->closeQuery();
+        }
+
+        foreach ($character->getStats() as $rank => $stats) {
+            $this->prepareQuery('INSERT INTO PlayerStats VALUES (?, ?, ?)');
+            $this->executeQuery(array($character->getName(), $stats->getID(), $rank));
+        }
+
+        return true;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function deleteCharacter(string $characterName): bool {
+        // check if the character exists
+        $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');
+        $this->executeQuery(array($characterName));
+
+        if (count($this->getQueryResult()) === 0) {
+            return false;
+        }
+
+        // delete character entity
+        $this->prepareQuery('DELETE FROM Character WHERE name = ?');
+        $this->executeQuery(array($characterName));
+        $this->closeQuery();
+
+        // delete relations with other tables
+        $this->prepareQuery('DELETE FROM Master WHERE character_name = ?');
+        $this->executeQuery(array($characterName));
+        $this->closeQuery();
+
+        $this->prepareQuery('DELETE FROM PlayerStats WHERE character_name = ?');
+        $this->executeQuery(array($characterName));
+        $this->closeQuery();
+
+        return true;
+    }
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
