@@ -1,6 +1,6 @@
 <?php
 /**
-@file     api/data/DataAccess.php
+@file     api/data/HissatsuAccess.php
 @author   Florian Lopitaux
 @version  0.1
 @summary  Class to interact with the Hissatsu sql table and relations.
@@ -117,10 +117,10 @@ final class HissatsuAccess extends DataAccess {
 
     // -------------------------------------------------------------------------
 
-    public function deleteHissatsu(string $hissatsuName): bool {
+    public function deleteHissatsu(string $name): bool {
         // check if the hissatsu exists
         $this->prepareQuery('SELECT Count(*) FROM Hissatsu WHERE name = ?');
-        $this->executeQuery(array($hissatsuName));
+        $this->executeQuery(array($name));
 
         if (count($this->getQueryResult()) === 0) {
             return false;
@@ -128,12 +128,12 @@ final class HissatsuAccess extends DataAccess {
 
         // delete hissatsu entity
         $this->prepareQuery('DELETE FROM Hissatsu WHERE name = ?');
-        $this->executeQuery(array($hissatsuName));
+        $this->executeQuery(array($name));
         $this->closeQuery();
 
         // delete relations with Character table
         $this->prepareQuery('DELETE FROM Master WHERE hisstasu_name = ?');
-        $this->executeQuery(array($hissatsuName));
+        $this->executeQuery(array($name));
         $this->closeQuery();
 
         return true;

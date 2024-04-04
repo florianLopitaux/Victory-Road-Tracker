@@ -1,6 +1,6 @@
 <?php
 /**
-@file     api/data/DataAccess.php
+@file     api/data/CharacterAccess.php
 @author   Florian Lopitaux
 @version  0.1
 @summary  Class to interact with the Character sql table and relations.
@@ -114,8 +114,13 @@ class CharacterAccess extends DataAccess {
         }
 
         foreach ($character->getStats() as $rank => $stats) {
+            $this->prepareQuery('INSERT INTO Statistics VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+            $this->executeQuery($stats->toArray());
+            $this->closeQuery();
+
             $this->prepareQuery('INSERT INTO PlayerStats VALUES (?, ?, ?)');
             $this->executeQuery(array($character->getName(), $stats->getID(), $rank));
+            $this->closeQuery();
         }
 
         return true;
@@ -123,10 +128,10 @@ class CharacterAccess extends DataAccess {
 
     // -------------------------------------------------------------------------
 
-    public function deleteCharacter(string $characterName): bool {
+    public function deleteCharacter(string $name): bool {
         // check if the character exists
         $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');
-        $this->executeQuery(array($characterName));
+        $this->executeQuery(array($name));
 
         if (count($this->getQueryResult()) === 0) {
             return false;
@@ -134,20 +139,21 @@ class CharacterAccess extends DataAccess {
 
         // delete character entity
         $this->prepareQuery('DELETE FROM Character WHERE name = ?');
-        $this->executeQuery(array($characterName));
+        $this->executeQuery(array($name));
         $this->closeQuery();
 
         // delete relations with other tables
         $this->prepareQuery('DELETE FROM Master WHERE character_name = ?');
-        $this->executeQuery(array($characterName));
+        $this->executeQuery(array($name));
         $this->closeQuery();
 
         $this->prepareQuery('DELETE FROM PlayerStats WHERE character_name = ?');
-        $this->executeQuery(array($characterName));
+        $this->executeQuery(array($name));
         $this->closeQuery();
 
         return true;
     }
+
 
     // -------------------------------------------------------------------------
     // PRIVATE METHODS
@@ -170,7 +176,7 @@ class CharacterAccess extends DataAccess {
 
     private function setCharacterStats(Character $character): void {
         // send sql request
-        $this->prepareQuery('SELECT * FROM Statistic JOIN PlayerStats ON Statistique.id = PlayerStats.idStats WHERE PlayerStats.character_name = ?');
+        $this->prepareQuery('SELECT * FROM Statistics JOIN PlayerStats ON Statistique.id = PlayerStats.idStats WHERE PlayerStats.character_name = ?');
         $this->executeQuery(array($character->getName()));
 
         // get the response
