@@ -49,7 +49,12 @@ abstract class BaseService {
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         $this->config = $config;
         $this->requestMethod = $requestMethod;
-        $this->has_token_auth = $config['api_token'] === $headerToken;
+
+        if ($headerToken == null) {
+            $this->has_token_auth = false;
+        } else {
+            $this->has_token_auth = preg_match('/Bearer\s(\S+)/', $headerToken, $config['api_token']);
+        }
     }
 
 

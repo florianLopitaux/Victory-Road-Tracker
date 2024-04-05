@@ -68,6 +68,8 @@ function apiRouting(string $requestMethod, array $uri) : void {
     $headers = getallheaders();
     if (in_array('Authorization', $headers)) {
         $headerToken = $headers['Authorization'];
+    } else if (in_array('HTTP_Authorization')) {
+        $headerToken = $headers['HTTP_Authorization'];
     } else {
         $headerToken = null;
     }
