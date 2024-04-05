@@ -98,13 +98,23 @@ class Hissatsu {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    public function toArray(): array {
-        return array(
-            $this->name,
-            $this->type->name,
-            $this->element->name,
-            $this->power
-        );
+    public function toArray(bool $with_keys = false): array {
+        if ($with_keys) {
+            return array(
+                'name' => $this->name,
+                'type' => $this->type->name,
+                'element' => $this->element->name,
+                'power' => $this->power
+            );
+
+        } else {
+            return array(
+                $this->name,
+                $this->type->name,
+                $this->element->name,
+                $this->power
+            );
+        }
     }
 
     // -------------------------------------------------------------------------

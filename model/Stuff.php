@@ -31,6 +31,7 @@
 
 namespace model;
 
+require_once 'model/Statistics.php';
 require_once 'model/StuffCategory.php';
 
 class Stuff {
@@ -78,5 +79,39 @@ class Stuff {
 
     public function setStats(Statistics $stats): void {
         $this->stats = $stats;
+    }
+
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    public function toArray(bool $with_keys = false): array {
+        if ($with_keys) {
+            return array(
+                'name' => $this->name,
+                'category' => $this->category->name,
+                'stats' => $this->stats->toArray(true);
+            );
+        } else {
+            return array(
+                $this->name,
+                $this->category->name,
+                $this->stats->toArray();
+            );
+        }
+    }
+
+
+    // -------------------------------------------------------------------------
+    // STATIC METHODS
+    // -------------------------------------------------------------------------
+
+    public static function fromArray(array $entity): Stuff {
+        return new Stuff(
+            $entity['name'],
+            StuffCategory::fromString($entity['category']),
+            Statistics::fromArray($entity['stats'])
+        );
     }
 }

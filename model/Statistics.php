@@ -163,17 +163,31 @@ class Statistics {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    public function toArray(): array {
-        return array(
-            $this->id,
-            $this->kick,
-            $this->control,
-            $this->pressure,
-            $this->physical,
-            $this->agility,
-            $this->intelligence,
-            $this->technique
-        );
+    public function toArray(bool $with_keys = false): array {
+        if ($with_keys) {
+            return array(
+                'id' => $this->id,
+                'kick' => $this->kick,
+                'control' => $this->control,
+                'pressure' => $this->pressure,
+                'physical' => $this->physical,
+                'agility' => $this->agility,
+                'intelligence' => $this->intelligence,
+                'technique' => $this->technique
+            );
+
+        } else {
+            return array(
+                $this->id,
+                $this->kick,
+                $this->control,
+                $this->pressure,
+                $this->physical,
+                $this->agility,
+                $this->intelligence,
+                $this->technique
+            );
+        }
     }
 
     // -------------------------------------------------------------------------

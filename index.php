@@ -73,6 +73,12 @@ function apiRouting(string $requestMethod, array $uri) : void {
     }
 
     // parse the uri parameters to get the service to use
+    if (sizeof($uri) === 0) {
+        http_response_code(400);
+        echo json_encode(array('response' => 'Bad request ! The specified api url routes need arguments and not only /api !'));
+        die();
+    }
+
     $serviceName = strtoupper(substr($uri[0], 0, 1)) . substr($uri[0], 1);
     $serviceCalled = "apiService\\$serviceName" . 'Service';
 

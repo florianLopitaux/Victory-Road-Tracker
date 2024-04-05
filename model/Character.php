@@ -129,4 +129,48 @@ class Character {
     public function setStats(PlayerRank $rank, Statistics $stats): void {
         $this->stats[$rank->name] = $stats;
     }
+
+
+    // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    public function toArray(): array {
+        $characterArray = array(
+            'name' => $this->name,
+            'element' => $this->element->name,
+            'level' => $this->level,
+            'hissatsu' => array(),
+            'stats' => array()
+        );
+
+        foreach ($this->hissatsu as $tuple) {
+            $characterArray['hissatsu'][] = array($tuple[0], $tuple[1]->toArray(true));
+        }
+
+        foreach ($this->stats as $rank => $stats) {
+            $characterArray['stats'][$rank] = $stats->toArray(true);
+        }
+
+        return $characterArray;
+    }
+
+
+    // -------------------------------------------------------------------------
+    // STATIC METHODS
+    // -------------------------------------------------------------------------
+
+    public static function fromArray(array $entity): Character {
+        $character = new Character($entity['name'], Element::fromString($entity['element']), $entity['level']);
+
+        foreach ($entity['hissatsu'] as $tuple) {
+            $character->addHissatsu(Hissatsu::fromArray($tuple[1]), $tuple[0])
+        }
+
+        foreach ($entity['stats'] as $rank => $stats) {
+            $character->setStats(PlayerRank::fromString($rank), Statistics::fromArray($stats));
+        }
+
+        return $character;
+    }
 }
