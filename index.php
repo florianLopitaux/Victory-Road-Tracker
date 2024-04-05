@@ -29,13 +29,14 @@
  * -------------------------------------------------------------------------
  */
 
-use apiService\{CharacterService};
+use apiService\{CharacterService, StuffService};
 use webController\{HomeController};
 
 // -------------------------------------------------------------------------
 
 function loadAPIDependencies() : void {
     require_once 'api/CharacterService.php';
+    require_once 'api/StuffService.php';
 }
 
 function loadWebSiteDependencies() : void {

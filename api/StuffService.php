@@ -1,9 +1,9 @@
 <?php
 /**
- * @file     api/CharacterService.php
+ * @file     api/StuffService.php
  * @author   Florian Lopitaux
  * @version  0.1
- * @summary  Class to manage api calls beginning by the following route : /character.
+ * @summary  Class to manage api calls beginning by the following route : /stuff.
  *
  * -------------------------------------------------------------------------
  *
@@ -32,21 +32,21 @@
 namespace apiService;
 require_once 'api/BaseService.php';
 
-use data\CharacterAccess;
-require_once 'data/CharacterAccess.php';
+use data\StuffAccess;
+require_once 'data/StuffAccess.php';
 
-use model\{Character, Element};
-require_once 'model/Character.php';
-require_once 'model/Element.php';
+use model\{Stuff, StuffCategory};
+require_once 'model/Stuff.php';
+require_once 'model/StuffCategory.php';
 
 
-class CharacterService extends BaseService {
+class StuffService extends BaseService {
 
     // -------------------------------------------------------------------------
     // FIELDS
     // -------------------------------------------------------------------------
 
-    private CharacterAccess $dbCharacter;
+    private StuffAccess $dbStuff;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -54,7 +54,7 @@ class CharacterService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $dbCharacter = new CharacterAccess($config['db_identifier'], $config['db_identifier']);
+        $dbStuff = new StuffAccess($config['db_identifier'], $config['db_identifier']);
     }
 
     // -------------------------------------------------------------------------
@@ -80,7 +80,7 @@ class CharacterService extends BaseService {
 
         } else {
             $response['code'] = 405;
-            $response['content'] = 'http request method not allowed for "/character"';
+            $response['content'] = 'http request method not allowed for "/stuff"';
         }
 
         echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT);
@@ -96,17 +96,19 @@ class CharacterService extends BaseService {
 
         if (sizeof($uri) !== 1) {
             $response['code'] = 400;
-            $response['content'] = 'Bad request ! The "/character" DELETE method has to have one argument !';
+            $response['content'] = 'Bad request ! The "/stuff" DELETE method has to have one argument !';
         }
 
-        $has_remove = $this->dbCharacter->deleteCharacter($uri[0]);
+        $stuff = $this->dbStuff->getStuff($uri[0]);
 
-        if ($has_remove) {
-            $response['code'] = 200;
-            $response['content'] = $uri[0] . ' has been deleted.'
-        } else {
+        if ($stuff == null) {
             $response['code'] = 422;
             $response['content'] = $uri[0] . ' doesn\'t found in the database, can\'t delete';
+        } else {
+            $this->dbCharacter->deleteStuff($stuff);
+
+            $response['code'] = 200;
+            $response['content'] = $uri[0] . ' has been deleted.'
         }
 
         return $response;
@@ -116,19 +118,19 @@ class CharacterService extends BaseService {
 
     private function processPost(array $uri, array $post): array {
         $response = array();
-        $character = null;
+        $stuff = null;
 
         try {
-            $character = Character::fromArray($post);
+            $stuff = Stuff::fromArray($post);
         } catch (Exception $e) {
             $response['code'] = 422;
-            $response['content'] = 'Impossible to transform the body POST request in Character model.';
+            $response['content'] = 'Impossible to transform the body POST request in Stuff model.';
         }
 
-        if ($character != null) {
-            $this->dbCharacter->insertCharacter($character);
+        if ($stuff != null) {
+            $this->dbStuff->insertStuff($stuff);
             $response['code'] = 200;
-            $response['content'] = 'Character entity correctly inserted.'
+            $response['content'] = 'Stuff entity correctly inserted.'
         } 
 
         return $response;
@@ -140,33 +142,33 @@ class CharacterService extends BaseService {
         $response = array();
 
         if (sizeof($uri) === 0) {
-            $characters = $this->dbCharacter->getAllCharacters();
+            $stuffs = $this->dbStuff->getAllStuffs();
 
             $response['code'] = 200;
-            $response['content'] = $this->transformToArray($characters);
+            $response['content'] = $this->transformToArray($stuffs);
 
         } else if (sizeof($uri) === 1) {
-            $character = $this->dbCharacter->getCharacter($uri[0]);
+            $stuff = $this->dbStuff->getStuff($uri[0]);
 
-            if ($character == null) {
+            if ($stuff == null) {
                 $response['code'] = 422;
                 $response['content'] = $uri[0] . ' doesn\'t found in the database.'
             } else {
                 $response['code'] = 200;
-                $response['content'] = $character->toArray();
+                $response['content'] = $stuff->toArray(true);
             }
 
-        } else if (sizeof($uri) === 2 && $uri[0] === 'element') {
-            $element = Element::fromString($uri[1]);
+        } else if (sizeof($uri) === 2 && $uri[0] === 'category') {
+            $category = StuffCategory::fromString($uri[1]);
 
-            if ($element == null) {
+            if ($category == null) {
                 $response['code'] = 422;
-                $response['content'] = $uri[1] . ' isn\'t a correct element.';
+                $response['content'] = $uri[1] . ' isn\'t a correct stuff category.';
             } else {
-                $characters = $this->dbCharacter->getElementCharacters($element);
+                $stuffs = $this->dbStuff->getCategoryStuffs($category);
 
                 $response['code'] = 200;
-                $response['content'] = $this->transformToArray($characters);
+                $response['content'] = $this->transformToArray($stuffs);
             }
         } else {
             $response['code'] = 400;
@@ -178,11 +180,11 @@ class CharacterService extends BaseService {
 
     // -------------------------------------------------------------------------
 
-    private function transformToArray(array $characters): array {
+    private function transformToArray(array $stuffs): array {
         $responseContent = array();
 
-        foreach ($characters as $current) {
-            $responseContent[] = $current->toArray();
+        foreach ($stuffs as $current) {
+            $responseContent[] = $current->toArray(true);
         }
 
         return $responseContent;

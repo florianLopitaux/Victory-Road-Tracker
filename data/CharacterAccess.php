@@ -93,6 +93,29 @@ class CharacterAccess extends DataAccess {
 
     // -------------------------------------------------------------------------
 
+    public function getElementCharacters(Element $element): array {
+        $characters = array();
+
+        // send sql request
+        $this->prepareQuery('SELECT * FROM Character WHERE element = ?');
+        $this->executeQuery(array($element->name));
+
+        // get the response
+        $result = $this->getQueryResult();
+
+        foreach ($result as $entity) {
+            $current = new Character($entity['name'], Element::fromString($entity['element']), $entity['level']);
+            $this->setCharacterHissatsu($current);
+            $this->setCharacterStats($current);
+
+            $characters[] = $current;
+        }
+
+        return $characters;
+    }
+
+    // -------------------------------------------------------------------------
+
     public function insertCharacter(Character $character): bool {
         // check if the character already exists
         $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');

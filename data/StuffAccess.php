@@ -82,7 +82,7 @@ class StuffAccess extends DataAccess {
 
     // -------------------------------------------------------------------------
 
-    public function getAllStuff(): array {
+    public function getAllStuffs(): array {
         $allStuff = array();
 
         // send sql server
