@@ -29,7 +29,7 @@
  * -------------------------------------------------------------------------
  */
 
-use apiService\{CharacterController};
+use apiService\{CharacterService};
 use webController\{HomeController};
 
 // -------------------------------------------------------------------------
@@ -72,14 +72,14 @@ function apiRouting(string $requestMethod, array $uri) : void {
         $headerToken = null;
     }
 
-    // parse the uri parameters to get the controller name
-    $controllerName = strtoupper(substr($uri[0], 0, 1)) . substr($uri[0], 1);
-    $serviceCalled = "apiService\\$controllerName" . 'Controller';
+    // parse the uri parameters to get the service to use
+    $serviceName = strtoupper(substr($uri[0], 0, 1)) . substr($uri[0], 1);
+    $serviceCalled = "apiService\\$serviceName" . 'Service';
 
     // check if the controller exists
     if (class_exists($serviceCalled)) {
-        $controller = new $serviceCalled($config, $requestMethod, $headerToken);
-        $statusCode = $controller->processRequest(array_slice($uri, 1), $_POST);
+        $service = new $serviceCalled($config, $requestMethod, $headerToken);
+        $statusCode = $service->processRequest(array_slice($uri, 1), $_POST);
 
         http_response_code($statusCode);
 
@@ -100,11 +100,11 @@ function websiteRouting(string $requestMethod, array $uri) : void {
         $controllerName = strtoupper(substr($uri[0], 0, 1)) . substr($uri[0], 1);
     }
 
-    $serviceCalled = "webService\\$controllerName" . 'Controller';
+    $controllerCalled = "webController\\$controllerName" . 'Controller';
 
     // check if the controller exists
-    if (class_exists($serviceCalled)) {
-        $controller = new $serviceCalled($requestMethod);
+    if (class_exists($controllerCalled)) {
+        $controller = new $controllerCalled($requestMethod);
         $statusCode = $controller->processRequest(array_slice($uri, 1), $_POST);
 
         http_response_code($statusCode);
