@@ -1,5 +1,6 @@
 <?php
-namespace webService;
+
+namespace webController;
 
 class HomeController {
 
