@@ -8,13 +8,13 @@ Some requests are protected, they need the private bearer token in the header Au
 ### GET
 
 > - /character  -- get all characters.
-> - /character/{name}  -- get a specific character by it's name.
+> - /character/{name}  -- get a specific character by its name.
 > - /character/element/{value} -- get all characters of a specific element (possible values : earth, fire, wind, wood).
 
 <br/>
 
 > - /hissatsu  -- get all hissatsu
-> - /hissatsu/{name}  -- get a specific hissatsu by it's name.
+> - /hissatsu/{name}  -- get a specific hissatsu by its name.
 > - /hissatsu/element/{value}  -- get all hisstatsu of a specific element (possible values : earth, fire, wind, wood).
 > - /hissatsu/type/{value}  -- get all hisstatsu of a specific type (possible values : catch, defense, offense, shoot).
 > - /hissatsu/characters/{hissatsu_name}  -- get all characters that possessing a specific hissatsu technique.
@@ -22,7 +22,7 @@ Some requests are protected, they need the private bearer token in the header Au
 <br/>
 
 > - /stuff  -- get all stuffs.
-> - /stuff/{name}  -- get a specific stuff by it's name.
+> - /stuff/{name}  -- get a specific stuff by its name.
 > - /stuff/category/{value}  -- get all stuffs of a specific category (possible values : boots, bracelet, pendant, special).
 
 <br/>
@@ -44,8 +44,8 @@ Some requests are protected, they need the private bearer token in the header Au
 
 ### DELETE (required bearer token authorization)
 
-> - /character/{name}  -- delete a specific character by it's name.
+> - /character/{name}  -- delete a specific character by its name.
 
 > - /hissatsu/{name}  -- delete a specific hissatsu by it's name.
 
-> - /stuff/{name}  -- delete a specific stuff by it's name.
+> - /stuff/{name}  -- delete a specific stuff by its name.

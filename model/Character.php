@@ -164,7 +164,7 @@ class Character {
         $character = new Character($entity['name'], Element::fromString($entity['element']), $entity['level']);
 
         foreach ($entity['hissatsu'] as $tuple) {
-            $character->addHissatsu(Hissatsu::fromArray($tuple[1]), $tuple[0])
+            $character->addHissatsu(Hissatsu::fromArray($tuple[1]), $tuple[0]);
         }
 
         foreach ($entity['stats'] as $rank => $stats) {

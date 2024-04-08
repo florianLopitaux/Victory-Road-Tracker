@@ -54,7 +54,7 @@ class StuffService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $dbStuff = new StuffAccess($config['db_identifier'], $config['db_identifier']);
+        $this->dbStuff = new StuffAccess($config['db_identifier'], $config['db_identifier']);
     }
 
     // -------------------------------------------------------------------------
@@ -97,6 +97,7 @@ class StuffService extends BaseService {
         if (sizeof($uri) !== 1) {
             $response['code'] = 400;
             $response['content'] = 'Bad request ! The "/stuff" DELETE method has to have one argument !';
+            return $response;
         }
 
         $stuff = $this->dbStuff->getStuff($uri[0]);
@@ -105,10 +106,10 @@ class StuffService extends BaseService {
             $response['code'] = 422;
             $response['content'] = $uri[0] . ' doesn\'t found in the database, can\'t delete';
         } else {
-            $this->dbCharacter->deleteStuff($stuff);
+            $this->dbStuff->deleteStuff($stuff);
 
             $response['code'] = 200;
-            $response['content'] = $uri[0] . ' has been deleted.'
+            $response['content'] = $uri[0] . ' has been deleted.';
         }
 
         return $response;
@@ -130,7 +131,7 @@ class StuffService extends BaseService {
         if ($stuff != null) {
             $this->dbStuff->insertStuff($stuff);
             $response['code'] = 200;
-            $response['content'] = 'Stuff entity correctly inserted.'
+            $response['content'] = 'Stuff entity correctly inserted.';
         } 
 
         return $response;
@@ -138,7 +139,7 @@ class StuffService extends BaseService {
 
     // -------------------------------------------------------------------------
 
-    private function processGet(array $uri, array $post) {
+    private function processGet(array $uri, array $post): array {
         $response = array();
 
         if (sizeof($uri) === 0) {
@@ -152,7 +153,7 @@ class StuffService extends BaseService {
 
             if ($stuff == null) {
                 $response['code'] = 422;
-                $response['content'] = $uri[0] . ' doesn\'t found in the database.'
+                $response['content'] = $uri[0] . ' doesn\'t found in the database.';
             } else {
                 $response['code'] = 200;
                 $response['content'] = $stuff->toArray(true);
@@ -172,7 +173,7 @@ class StuffService extends BaseService {
             }
         } else {
             $response['code'] = 400;
-            $response['content'] = 'Bad request routing !'
+            $response['content'] = 'Bad request routing !';
         }
 
         return $response;

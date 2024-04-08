@@ -54,7 +54,7 @@ class CharacterService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $dbCharacter = new CharacterAccess($config['db_identifier'], $config['db_identifier']);
+        $this->dbCharacter = new CharacterAccess($config['db_identifier'], $config['db_identifier']);
     }
 
     // -------------------------------------------------------------------------
@@ -97,13 +97,14 @@ class CharacterService extends BaseService {
         if (sizeof($uri) !== 1) {
             $response['code'] = 400;
             $response['content'] = 'Bad request ! The "/character" DELETE method has to have one argument !';
+            return $response;
         }
 
         $has_remove = $this->dbCharacter->deleteCharacter($uri[0]);
 
         if ($has_remove) {
             $response['code'] = 200;
-            $response['content'] = $uri[0] . ' has been deleted.'
+            $response['content'] = $uri[0] . ' has been deleted.';
         } else {
             $response['code'] = 422;
             $response['content'] = $uri[0] . ' doesn\'t found in the database, can\'t delete';
@@ -128,7 +129,7 @@ class CharacterService extends BaseService {
         if ($character != null) {
             $this->dbCharacter->insertCharacter($character);
             $response['code'] = 200;
-            $response['content'] = 'Character entity correctly inserted.'
+            $response['content'] = 'Character entity correctly inserted.';
         } 
 
         return $response;
@@ -136,7 +137,7 @@ class CharacterService extends BaseService {
 
     // -------------------------------------------------------------------------
 
-    private function processGet(array $uri, array $post) {
+    private function processGet(array $uri, array $post): array {
         $response = array();
 
         if (sizeof($uri) === 0) {
@@ -150,7 +151,7 @@ class CharacterService extends BaseService {
 
             if ($character == null) {
                 $response['code'] = 422;
-                $response['content'] = $uri[0] . ' doesn\'t found in the database.'
+                $response['content'] = $uri[0] . ' doesn\'t found in the database.';
             } else {
                 $response['code'] = 200;
                 $response['content'] = $character->toArray();
@@ -170,7 +171,7 @@ class CharacterService extends BaseService {
             }
         } else {
             $response['code'] = 400;
-            $response['content'] = 'Bad request routing !'
+            $response['content'] = 'Bad request routing !';
         }
 
         return $response;

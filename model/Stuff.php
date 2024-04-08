@@ -91,13 +91,13 @@ class Stuff {
             return array(
                 'name' => $this->name,
                 'category' => $this->category->name,
-                'stats' => $this->stats->toArray(true);
+                'stats' => $this->stats->toArray(true)
             );
         } else {
             return array(
                 $this->name,
                 $this->category->name,
-                $this->stats->toArray();
+                $this->stats->toArray()
             );
         }
     }
