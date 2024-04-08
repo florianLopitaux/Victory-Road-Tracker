@@ -31,12 +31,7 @@ Some requests are protected, they need the private bearer token in the header Au
 
 > - /character |||| **[character model]**  -- create a new character.
 
-<br/>
-
 > - /hissatsu |||| **[hissatsu model]**  -- create a new hissatsu.
-> - /hissatsu/character |||| {'character_name' => **[name of the character]**, 'hissatsu_name' => **[name of the hissatsu]**, 'level_unlocked' => **[level when the character unlocks the hisstasu]**}  -- insert a new relation between a character and a hissatsu, means that the character knows that hissatsu.
-
-<br/>
 
 > - /stuff |||| **[stuff model]**  -- create a new stuff.
 

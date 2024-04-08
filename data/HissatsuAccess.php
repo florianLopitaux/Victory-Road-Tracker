@@ -34,8 +34,11 @@ namespace data;
 require_once 'data/DataAccess.php';
 require_once 'data/CharacterAccess.php';
 
-use model\Hissatsu;
+use model\{Element, Hissatsu, HissatsuType};
+require_once 'model/Element.php';
 require_once 'model/Hissatsu.php';
+require_once 'model/HissatsuType.php';
+
 
 final class HissatsuAccess extends DataAccess {
 
@@ -66,6 +69,44 @@ final class HissatsuAccess extends DataAccess {
         // send sql request
         $this->prepareQuery('SELECT * FROM Hissatsu');
         $this->executeQuery(array());
+
+        // get the response
+        $result = $this->getQueryResult();
+
+        foreach ($result as $entity) {
+            $hissatsu[] = Hissatsu::fromArray($entity);
+        }
+
+        return $hissatsu;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function getElementHissatsu(Element $element): array {
+        $hissatsu = array();
+
+        // send sql request
+        $this->prepareQuery('SELECT * FROM Hissatsu WHERE element = ?');
+        $this->executeQuery(array($element->name));
+
+        // get the response
+        $result = $this->getQueryResult();
+
+        foreach ($result as $entity) {
+            $hissatsu[] = Hissatsu::fromArray($entity);
+        }
+
+        return $hissatsu;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function getTypeHissatsu(HissatsuType $type): array {
+        $hissatsu = array();
+
+        // send sql request
+        $this->prepareQuery('SELECT * FROM Hissatsu WHERE type = ?');
+        $this->executeQuery(array($type->name));
 
         // get the response
         $result = $this->getQueryResult();

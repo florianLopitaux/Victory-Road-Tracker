@@ -1,21 +1,21 @@
 <?php
 /**
- * @file     api/StuffService.php
+ * @file     api/HissatsuService.php
  * @author   Florian Lopitaux
  * @version  0.1
- * @summary  Class to manage api calls beginning by the following route : /stuff.
+ * @summary  Class to manage api calls beginning by the following route : /hissatsu.
  *
  * -------------------------------------------------------------------------
  *
  * Copyright (C) 2024 Victory-Road-Tracker
- * 
+ *
  * Use of this software is governed by the GNU Public License, version 3.
  *
  * Victory-Road-Tracker is free RESTFUL API: you can use it under the terms
  * of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Victory-Road-Tracker is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -32,21 +32,23 @@
 namespace apiService;
 require_once 'api/BaseService.php';
 
-use data\StuffAccess;
-require_once 'data/StuffAccess.php';
+use data\{CharacterAccess, HissatsuAccess};
+require_once 'data/CharacterAccess.php';
+require_once 'data/HissatsuAccess.php';
 
-use model\{Stuff, StuffCategory};
-require_once 'model/Stuff.php';
-require_once 'model/StuffCategory.php';
+use model\{Element, Hissatsu, HissatsuType};
+require_once 'model/Element.php';
+require_once 'model/Hissatsu.php';
+require_once 'model/HissatsuType.php';
 
 
-class StuffService extends BaseService {
+class HissatsuService extends BaseService {
 
     // -------------------------------------------------------------------------
     // FIELDS
     // -------------------------------------------------------------------------
 
-    private StuffAccess $dbStuff;
+    private HissatsuAccess $dbHissatsu;
 
     // -------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -54,7 +56,7 @@ class StuffService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $this->dbStuff = new StuffAccess($config['db_identifier'], $config['db_identifier']);
+        $this->dbHissatsu = new HissatsuAccess($config['db_identifier'], $config['db_identifier']);
     }
 
     // -------------------------------------------------------------------------
@@ -80,7 +82,7 @@ class StuffService extends BaseService {
 
         } else {
             $response['code'] = 405;
-            $response['content'] = 'http request method not allowed for "/stuff"';
+            $response['content'] = 'http request method not allowed for "/hissatsu"';
         }
 
         echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT);
@@ -96,20 +98,18 @@ class StuffService extends BaseService {
 
         if (sizeof($uri) !== 1) {
             $response['code'] = 400;
-            $response['content'] = 'Bad request ! The "/stuff" DELETE method has to have one argument !';
+            $response['content'] = 'Bad request ! The "/hissatsu" DELETE method has to have one argument !';
             return $response;
         }
 
-        $stuff = $this->dbStuff->getStuff($uri[0]);
+        $has_remove = $this->dbHissatsu->deleteHissatsu($uri[0]);
 
-        if ($stuff == null) {
-            $response['code'] = 422;
-            $response['content'] = $uri[0] . ' doesn\'t found in the database, can\'t delete';
-        } else {
-            $this->dbStuff->deleteStuff($stuff);
-
+        if ($has_remove) {
             $response['code'] = 200;
             $response['content'] = $uri[0] . ' has been deleted.';
+        } else {
+            $response['code'] = 422;
+            $response['content'] = $uri[0] . ' doesn\'t found in the database, can\'t delete';
         }
 
         return $response;
@@ -119,20 +119,20 @@ class StuffService extends BaseService {
 
     private function processPost(array $uri, array $post): array {
         $response = array();
-        $stuff = null;
+        $hissatsu = null;
 
         try {
-            $stuff = Stuff::fromArray($post);
+            $hissatsu = Hissatsu::fromArray($post);
         } catch (Exception $e) {
             $response['code'] = 422;
-            $response['content'] = 'Impossible to transform the body POST request in Stuff model.';
+            $response['content'] = 'Impossible to transform the body POST request in Hissatsu model.';
         }
 
-        if ($stuff != null) {
-            $this->dbStuff->insertStuff($stuff);
+        if ($hissatsu != null) {
+            $this->dbHissatsu->insertHissatsu($hissatsu);
             $response['code'] = 200;
-            $response['content'] = 'Stuff entity correctly inserted.';
-        } 
+            $response['content'] = 'Hissatsu entity correctly inserted.';
+        }
 
         return $response;
     }
@@ -143,34 +143,58 @@ class StuffService extends BaseService {
         $response = array();
 
         if (sizeof($uri) === 0) {
-            $stuffs = $this->dbStuff->getAllStuffs();
+            $hissatsu = $this->dbHissatsu->getAllHissatsu();
 
             $response['code'] = 200;
-            $response['content'] = $this->transformToArray($stuffs);
+            $response['content'] = $this->transformToArray($hissatsu);
 
         } else if (sizeof($uri) === 1) {
-            $stuff = $this->dbStuff->getStuff($uri[0]);
+            $hissatsu = $this->dbHissatsu->getHissatsu($uri[0]);
 
-            if ($stuff == null) {
+            if ($hissatsu == null) {
                 $response['code'] = 422;
                 $response['content'] = $uri[0] . ' doesn\'t found in the database.';
             } else {
                 $response['code'] = 200;
-                $response['content'] = $stuff->toArray(true);
+                $response['content'] = $hissatsu->toArray();
             }
 
-        } else if (sizeof($uri) === 2 && $uri[0] === 'category') {
-            $category = StuffCategory::fromString($uri[1]);
+        } else if (sizeof($uri) === 2) {
+            if ($uri[0] === 'element') {
+                $element = Element::fromString($uri[1]);
 
-            if ($category == null) {
-                $response['code'] = 422;
-                $response['content'] = $uri[1] . ' isn\'t a correct stuff category.';
-            } else {
-                $stuffs = $this->dbStuff->getCategoryStuffs($category);
+                if ($element == null) {
+                    $response['code'] = 422;
+                    $response['content'] = $uri[1] . ' isn\'t a correct element.';
+                } else {
+                    $hissatsu = $this->dbHissatsu->getElementHissatsu($element);
+
+                    $response['code'] = 200;
+                    $response['content'] = $this->transformToArray($hissatsu);
+                }
+            } else if ($uri[0] === 'type') {
+                $type = HissatsuType::fromString($uri[1]);
+
+                if ($type == null) {
+                    $response['code'] = 422;
+                    $response['content'] = $uri[1] . ' isn\'t a correct Hissatsu type.';
+                } else {
+                    $hissatsu = $this->dbHissatsu->getTypeHissatsu($type);
+
+                    $response['code'] = 200;
+                    $response['content'] = $this->transformToArray($hissatsu);
+                }
+            } else if ($uri[0] === 'characters') {
+                $characterAccess = new CharacterAccess($this->config['db_identifier'], $this->config['db_identifier']);
+                $characters = $this->dbHissatsu->getHissatsuOwners($characterAccess, $uri[1]);
 
                 $response['code'] = 200;
-                $response['content'] = $this->transformToArray($stuffs);
+                $response['content'] = $this->transformToArray($characters);
+            } else {
+                $response['code'] = 400;
+                $response['content'] = 'Bad request routing !';
             }
+
         } else {
             $response['code'] = 400;
             $response['content'] = 'Bad request routing !';
@@ -185,7 +209,7 @@ class StuffService extends BaseService {
         $responseContent = array();
 
         foreach ($tab as $current) {
-            $responseContent[] = $current->toArray(true);
+            $responseContent[] = $current->toArray();
         }
 
         return $responseContent;

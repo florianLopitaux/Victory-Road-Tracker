@@ -179,10 +179,10 @@ class CharacterService extends BaseService {
 
     // -------------------------------------------------------------------------
 
-    private function transformToArray(array $characters): array {
+    private function transformToArray(array $tab): array {
         $responseContent = array();
 
-        foreach ($characters as $current) {
+        foreach ($tab as $current) {
             $responseContent[] = $current->toArray();
         }
 
