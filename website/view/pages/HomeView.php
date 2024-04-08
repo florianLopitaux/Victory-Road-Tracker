@@ -34,7 +34,7 @@ namespace view;
 require_once 'website/view/BaseView.php';
 
 
-final class HomeBaseView extends BaseView {
+final class HomeView extends BaseView {
     public function __construct(Layout $layout) {
         parent::__construct($layout);
 
@@ -42,9 +42,19 @@ final class HomeBaseView extends BaseView {
         $this->title = 'Home';
 
         // set css files for this page
-        // $this->styles[] = '';
+        $this->styles[] = 'pages/home';
 
         // set the html content
-        $this->content = '';
+        $this->content = '<main>
+            <h1>Bienvenue sur Inazuma Eleven Victory Road Tracker !</h1>
+            <span>choisissez votre outil</span>
+            
+            <section id="menu-buttons">
+                <a href="/teambuilder">Team Builder</a>
+                <a href="/dle">DLE</a>
+                <a href="/database">Base de données</a>
+                <a href="/articles">Articles</a>
+            </section>
+        </main>';
     }
 }
