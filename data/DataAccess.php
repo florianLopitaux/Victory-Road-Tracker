@@ -79,6 +79,29 @@ abstract class DataAccess {
 
 
     // -------------------------------------------------------------------------
+    // PUBLIC METHODS
+    // -------------------------------------------------------------------------
+
+    /**
+     * This method return the last identifier inserted with the object database (usefully for auto-increment identifier).
+     *
+     * @return int|string|null The last identifier, null if no entity inserted.
+     */
+    public function getLastIDInserted(): int | string | null {
+        $id = $this->dbh->lastInsertId();
+
+        if ($id === false) {
+            return null;
+        }
+
+        try {
+            return intval($id);
+        } catch (\Exception) {
+            return $id;
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // PROTECTED METHODS
     // -------------------------------------------------------------------------
 

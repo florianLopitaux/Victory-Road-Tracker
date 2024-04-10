@@ -121,7 +121,7 @@ class CharacterService extends BaseService {
 
         try {
             $character = Character::fromArray($post);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response['code'] = 422;
             $response['content'] = 'Impossible to transform the body POST request in Character model.';
         }

@@ -123,7 +123,7 @@ class StuffService extends BaseService {
 
         try {
             $stuff = Stuff::fromArray($post);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response['code'] = 422;
             $response['content'] = 'Impossible to transform the body POST request in Stuff model.';
         }

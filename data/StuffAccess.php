@@ -106,17 +106,35 @@ class StuffAccess extends DataAccess {
         $this->prepareQuery('SELECT COUNT(*) FROM Stuff WHERE name = ?');
         $this->executeQuery(array($stuff->getName()));
 
-        if (count($this->getQueryResult()) > 0) {
+        if ($this->getQueryResult()[0] > 0) {
             return false;
         }
 
-        // send sql request
-        $this->prepareQuery('INSERT INTO Statistics VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-        $this->executeQuery($stuff->getStats()->toArray());
+        // check if statistic entity exist and create it isn't
+        $id_stats = $stuff->getStats()->toArray()[0];
+
+        if ($id_stats === -1) {
+            $this->prepareQuery('INSERT INTO Statistics (`kick`, `control`, `pressure`, `physical`, `agility`, `intelligence`, `technique`) VALUES (?, ?, ?, ?, ?, ?, ?)');
+            $this->executeQuery($stuff->getStats()->toArray());
+
+        }  else {
+            $this->prepareQuery('SELECT COUNT(*) FROM Statistics WHERE id = ?');
+            $this->executeQuery(array($id_stats));
+
+            if ($this->getQueryResult()[0] === 0) {
+                $this->prepareQuery('INSERT INTO Statistics VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+                $this->executeQuery($stuff->getStats()->toArray());
+            }
+        }
         $this->closeQuery();
 
+        // create stuff entity
+        if ($id_stats === -1) {
+            $id_stats = $this->getLastIDInserted();
+        }
+
         $this->prepareQuery('INSERT INTO Stuff VALUES (?, ?, ?)');
-        $this->executeQuery(array($stuff->getName(), $stuff->getCategory()->name, $stuff->getStats()->getID()));
+        $this->executeQuery(array($stuff->getName(), $stuff->getCategory()->name, $id_stats));
         $this->closeQuery();
 
         return true;
