@@ -92,13 +92,13 @@ def check_stats_cell(value: str) -> int | None:
 def get_stuff_stats(stats_data: dict) -> dict[str, int]:
     stats = dict()
 
-    stats['kick'] = check_stats_cell(row['Frappe'])
-    stats['control'] = check_stats_cell(row['Controle'])
-    stats['pressure'] = check_stats_cell(row['Pression'])
-    stats['physical'] = check_stats_cell(row['Physique'])
-    stats['agility'] = check_stats_cell(row['Agilite'])
-    stats['intelligence'] = check_stats_cell(row['Intelligence'])
-    stats['technique'] = check_stats_cell(row['Technique'])
+    stats['kick'] = check_stats_cell(stats_data['Frappe'])
+    stats['control'] = check_stats_cell(stats_data['Controle'])
+    stats['pressure'] = check_stats_cell(stats_data['Pression'])
+    stats['physical'] = check_stats_cell(stats_data['Physique'])
+    stats['agility'] = check_stats_cell(stats_data['Agilite'])
+    stats['intelligence'] = check_stats_cell(stats_data['Intelligence'])
+    stats['technique'] = check_stats_cell(stats_data['Technique'])
 
     return stats
 

@@ -49,7 +49,7 @@ class CharacterAccess extends DataAccess {
 
     public function getCharacter(string $name): Character | null {
         // send sql request
-        $this->prepareQuery('SELECT * FROM Character WHERE name = ?');
+        $this->prepareQuery('SELECT * FROM Characters WHERE name = ?');
         $this->executeQuery(array($name));
 
         // get the response
@@ -74,7 +74,7 @@ class CharacterAccess extends DataAccess {
         $characters = array();
 
         // send sql request
-        $this->prepareQuery('SELECT * FROM Character');
+        $this->prepareQuery('SELECT * FROM Characters');
         $this->executeQuery(array());
 
         // get the response
@@ -97,7 +97,7 @@ class CharacterAccess extends DataAccess {
         $characters = array();
 
         // send sql request
-        $this->prepareQuery('SELECT * FROM Character WHERE element = ?');
+        $this->prepareQuery('SELECT * FROM Characters WHERE element = ?');
         $this->executeQuery(array($element->name));
 
         // get the response
@@ -118,7 +118,7 @@ class CharacterAccess extends DataAccess {
 
     public function insertCharacter(Character $character): bool {
         // check if the character already exists
-        $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');
+        $this->prepareQuery('SELECT COUNT(*) FROM Characters WHERE name = ?');
         $this->executeQuery(array($character->getName()));
 
         if (count($this->getQueryResult()) > 0) {
@@ -126,12 +126,12 @@ class CharacterAccess extends DataAccess {
         }
 
         // send sql request
-        $this->prepareQuery('INSERT INTO Character VALUES (?, ?, ?)');
+        $this->prepareQuery('INSERT INTO Characters VALUES (?, ?, ?)');
         $this->executeQuery(array($character->getName(), $character->getElement()->name, $character->getLevel()));
         $this->closeQuery();
 
         foreach ($character->getHissatsu() as $hissatsuData) {
-            $this->prepareQuery('INSERT INTO Master VALUES (?, ?, ?)');
+            $this->prepareQuery('INSERT INTO CharacterHissatsu VALUES (?, ?, ?)');
             $this->executeQuery(array($character->getName(), $hissatsuData[1]->getName(), $hissatsuData[0]));
             $this->closeQuery();
         }
@@ -141,7 +141,7 @@ class CharacterAccess extends DataAccess {
             $this->executeQuery($stats->toArray());
             $this->closeQuery();
 
-            $this->prepareQuery('INSERT INTO PlayerStats VALUES (?, ?, ?)');
+            $this->prepareQuery('INSERT INTO CharacterStats VALUES (?, ?, ?)');
             $this->executeQuery(array($character->getName(), $stats->getID(), $rank));
             $this->closeQuery();
         }
@@ -153,7 +153,7 @@ class CharacterAccess extends DataAccess {
 
     public function deleteCharacter(string $name): bool {
         // check if the character exists
-        $this->prepareQuery('SELECT COUNT(*) FROM Character WHERE name = ?');
+        $this->prepareQuery('SELECT COUNT(*) FROM Characters WHERE name = ?');
         $this->executeQuery(array($name));
 
         if (count($this->getQueryResult()) === 0) {
@@ -161,16 +161,16 @@ class CharacterAccess extends DataAccess {
         }
 
         // delete character entity
-        $this->prepareQuery('DELETE FROM Character WHERE name = ?');
+        $this->prepareQuery('DELETE FROM Characters WHERE name = ?');
         $this->executeQuery(array($name));
         $this->closeQuery();
 
         // delete relations with other tables
-        $this->prepareQuery('DELETE FROM Master WHERE character_name = ?');
+        $this->prepareQuery('DELETE FROM CharacterHissatsu WHERE character_name = ?');
         $this->executeQuery(array($name));
         $this->closeQuery();
 
-        $this->prepareQuery('DELETE FROM PlayerStats WHERE character_name = ?');
+        $this->prepareQuery('DELETE FROM CharacterStats WHERE character_name = ?');
         $this->executeQuery(array($name));
         $this->closeQuery();
 
@@ -184,7 +184,7 @@ class CharacterAccess extends DataAccess {
 
     private function setCharacterHissatsu(Character $character): void {
         // send sql request
-        $this->prepareQuery('SELECT * FROM Hissatsu JOIN Master ON Hissatsu.name = Master.hisstasu_name WHERE Master.character_name = ?');
+        $this->prepareQuery('SELECT * FROM Hissatsu JOIN CharacterHissatsu ON Hissatsu.name = CharacterHissatsu.hisstasu_name WHERE CharacterHissatsu.character_name = ?');
         $this->executeQuery(array($character->getName()));
 
         // get the response
@@ -199,7 +199,7 @@ class CharacterAccess extends DataAccess {
 
     private function setCharacterStats(Character $character): void {
         // send sql request
-        $this->prepareQuery('SELECT * FROM Statistics JOIN PlayerStats ON Statistique.id = PlayerStats.idStats WHERE PlayerStats.character_name = ?');
+        $this->prepareQuery('SELECT * FROM Statistics JOIN CharacterStats ON Statistics.id = CharacterStats.idStats WHERE CharacterStats.character_name = ?');
         $this->executeQuery(array($character->getName()));
 
         // get the response

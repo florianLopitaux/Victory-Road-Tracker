@@ -124,7 +124,7 @@ final class HissatsuAccess extends DataAccess {
         $characters = array();
 
         // send sql request
-        $this->prepareQuery('SELECT Character.name FROM Character JOIN Master ON Character.name = Master.character_name WHERE Master.hissatsu_name = ?');
+        $this->prepareQuery('SELECT Characters.name FROM Characters JOIN CharacterHissatsu ON Characters.name = CharacterHissatsu.character_name WHERE CharacterHissatsu.hissatsu_name = ?');
         $this->executeQuery(array($hissatsuName));
 
         // get the response
@@ -173,7 +173,7 @@ final class HissatsuAccess extends DataAccess {
         $this->closeQuery();
 
         // delete relations with Character table
-        $this->prepareQuery('DELETE FROM Master WHERE hisstasu_name = ?');
+        $this->prepareQuery('DELETE FROM CharacterHissatsu WHERE hisstasu_name = ?');
         $this->executeQuery(array($name));
         $this->closeQuery();
 

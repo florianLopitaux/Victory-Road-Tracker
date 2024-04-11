@@ -46,7 +46,7 @@ class StuffAccess extends DataAccess {
 
     public function getStuff(string $name): Stuff | null {
         // send sql server
-        $this->prepareQuery('SELECT * FROM Stuff JOIN Statistics ON Stuff.id_stats = Statistics.id WHERE Stuff.name = ?');
+        $this->prepareQuery('SELECT * FROM Stuffs JOIN Statistics ON Stuffs.id_stats = Statistics.id WHERE Stuffs.name = ?');
         $this->executeQuery(array($name));
 
         // get the response
@@ -67,7 +67,7 @@ class StuffAccess extends DataAccess {
         $stuffs = array();
 
         // send sql server
-        $this->prepareQuery('SELECT * FROM Stuff JOIN Statistics ON Stuff.id_stats = Statistics.id WHERE Stuff.category = ?');
+        $this->prepareQuery('SELECT * FROM Stuffs JOIN Statistics ON Stuffs.id_stats = Statistics.id WHERE Stuffs.category = ?');
         $this->executeQuery(array($category->name));
 
         // get the response
@@ -86,7 +86,7 @@ class StuffAccess extends DataAccess {
         $allStuff = array();
 
         // send sql server
-        $this->prepareQuery('SELECT * FROM Stuff JOIN Statistics ON Stuff.id_stats = Statistics.id');
+        $this->prepareQuery('SELECT * FROM Stuffs JOIN Statistics ON Stuff.id_stats = Statistics.id');
         $this->executeQuery(array());
 
         // get the response
@@ -103,7 +103,7 @@ class StuffAccess extends DataAccess {
 
     public function insertStuff(Stuff $stuff): bool {
         // check if the stuff already exists
-        $this->prepareQuery('SELECT COUNT(*) FROM Stuff WHERE name = ?');
+        $this->prepareQuery('SELECT COUNT(*) FROM Stuffs WHERE name = ?');
         $this->executeQuery(array($stuff->getName()));
 
         if ($this->getQueryResult()[0] > 0) {
@@ -133,7 +133,7 @@ class StuffAccess extends DataAccess {
             $id_stats = $this->getLastIDInserted();
         }
 
-        $this->prepareQuery('INSERT INTO Stuff VALUES (?, ?, ?)');
+        $this->prepareQuery('INSERT INTO Stuffs VALUES (?, ?, ?)');
         $this->executeQuery(array($stuff->getName(), $stuff->getCategory()->name, $id_stats));
         $this->closeQuery();
 
@@ -144,7 +144,7 @@ class StuffAccess extends DataAccess {
 
     public function deleteStuff(Stuff $stuff): bool {
         // check if the stuff exists
-        $this->prepareQuery('SELECT COUNT(*) FROM Stuff WHERE name = ?');
+        $this->prepareQuery('SELECT COUNT(*) FROM Stuffs WHERE name = ?');
         $this->executeQuery(array($stuff->getName()));
 
         if (count($this->getQueryResult()) === 0) {
@@ -152,7 +152,7 @@ class StuffAccess extends DataAccess {
         }
 
         // delete entity
-        $this->prepareQuery('DELETE FROM Stuff WHERE name = ?');
+        $this->prepareQuery('DELETE FROM Stuffs WHERE name = ?');
         $this->executeQuery(array($stuff->getName()));
         $this->closeQuery();
 
