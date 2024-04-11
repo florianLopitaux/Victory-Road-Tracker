@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     api/StuffService.php
+ * @file     api_/StuffService.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  Class to manage api calls beginning by the following route : /stuff.
@@ -30,7 +30,7 @@
  */
 
 namespace apiService;
-require_once 'api/BaseService.php';
+require_once 'api_/BaseService.php';
 
 use data\StuffAccess;
 require_once 'data/StuffAccess.php';
@@ -54,7 +54,7 @@ class StuffService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $this->dbStuff = new StuffAccess($config['db_identifier'], $config['db_identifier']);
+        $this->dbStuff = new StuffAccess($config['db_identifier'], $config['db_password']);
     }
 
     // -------------------------------------------------------------------------
@@ -83,7 +83,7 @@ class StuffService extends BaseService {
             $response['content'] = 'http request method not allowed for "/stuff"';
         }
 
-        echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT);
+        echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return $response['code'];
     }
 

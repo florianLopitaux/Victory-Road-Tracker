@@ -37,8 +37,8 @@ abstract class DataAccess {
     // FIELDS
     // -------------------------------------------------------------------------
 
-    private static string $HOST = "mysql-victory_road_tracker.alwaysdata.net";
-    private static string $DATA_BASE = "victory_road_tracker_bd";
+    private static string $HOST = "mysql-victoryroad-tracker.alwaysdata.net";
+    private static string $DATA_BASE = "victoryroad-tracker_bd";
 
     private \PDO|null $dbh;
     private \PDOStatement $query;

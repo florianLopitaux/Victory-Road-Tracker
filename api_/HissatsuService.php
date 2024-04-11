@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     api/HissatsuService.php
+ * @file     api_/HissatsuService.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  Class to manage api calls beginning by the following route : /hissatsu.
@@ -30,7 +30,7 @@
  */
 
 namespace apiService;
-require_once 'api/BaseService.php';
+require_once 'api_/BaseService.php';
 
 use data\{CharacterAccess, HissatsuAccess};
 require_once 'data/CharacterAccess.php';
@@ -56,7 +56,7 @@ class HissatsuService extends BaseService {
 
     public function __construct(array $config, string $requestMethod, string $headerToken) {
         parent::__construct($config, $requestMethod, $headerToken);
-        $this->dbHissatsu = new HissatsuAccess($config['db_identifier'], $config['db_identifier']);
+        $this->dbHissatsu = new HissatsuAccess($config['db_identifier'], $config['db_password']);
     }
 
     // -------------------------------------------------------------------------
@@ -85,7 +85,7 @@ class HissatsuService extends BaseService {
             $response['content'] = 'http request method not allowed for "/hissatsu"';
         }
 
-        echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT);
+        echo json_encode(array('response' => $response['content']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return $response['code'];
     }
 

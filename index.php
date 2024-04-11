@@ -29,14 +29,15 @@
  * -------------------------------------------------------------------------
  */
 
-use apiService\{CharacterService, StuffService};
+use apiService\{CharacterService, HissatsuService, StuffService};
 use webController\{HomeController};
 
 // -------------------------------------------------------------------------
 
 function loadAPIDependencies() : void {
-    require_once 'api/CharacterService.php';
-    require_once 'api/StuffService.php';
+    require_once 'api_/CharacterService.php';
+    require_once 'api_/HissatsuService.php';
+    require_once 'api_/StuffService.php';
 }
 
 function loadWebSiteDependencies() : void {
@@ -46,10 +47,10 @@ function loadWebSiteDependencies() : void {
 // -------------------------------------------------------------------------
 
 function apiRouting(string $requestMethod, array $uri) : void {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
 
     // check if api routing is specified
-    if (sizeof($uri) === 0) {
+    if (strlen($uri[0]) === 0) {
         http_response_code(404);
         echo json_encode(array('response' => '404 Error ! No route specified in the url !'));
         die();
@@ -73,7 +74,7 @@ function apiRouting(string $requestMethod, array $uri) : void {
     } else if (in_array('HTTP_Authorization', $headers)) {
         $headerToken = $headers['HTTP_Authorization'];
     } else {
-        $headerToken = null;
+        $headerToken = '';
     }
 
     // parse the uri parameters to get the service to use
@@ -97,7 +98,7 @@ function apiRouting(string $requestMethod, array $uri) : void {
 
 function websiteRouting(string $requestMethod, array $uri) : void {
     // default controller if uri is empty
-    if (sizeof($uri) === 0) {
+    if (strlen($uri[0]) === 0) {
         $controllerName = "Home";
     } else {
         // transform the first letter to upper to match with controllers name
@@ -145,6 +146,7 @@ array_shift($uriParameters); // remove first element always empty
 // check if the request is for the API or the website
 if (sizeof($uriParameters) > 0 && $uriParameters[0] === 'api') {
     loadAPIDependencies();
+    array_shift($uriParameters); // remove 'api' element
     apiRouting($requestMethod, $uriParameters);
 
 } else {

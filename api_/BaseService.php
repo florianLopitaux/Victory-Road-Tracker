@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     api/BaseService.php
+ * @file     api_/BaseService.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  Base abstract class of api services.
