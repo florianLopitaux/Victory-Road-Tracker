@@ -163,10 +163,9 @@ class Statistics {
     // PUBLIC METHODS
     // -------------------------------------------------------------------------
 
-    public function toArray(bool $with_keys = false): array {
+    public function toArray(bool $with_keys = false, bool $with_id = true): array {
         if ($with_keys) {
-            return array(
-                'id' => $this->id,
+            $object = array(
                 'kick' => $this->kick,
                 'control' => $this->control,
                 'pressure' => $this->pressure,
@@ -176,9 +175,12 @@ class Statistics {
                 'technique' => $this->technique
             );
 
+            if ($with_id) {
+                $object['id'] = $this->id;
+            }
+
         } else {
-            return array(
-                $this->id,
+            $object = array(
                 $this->kick,
                 $this->control,
                 $this->pressure,
@@ -187,7 +189,13 @@ class Statistics {
                 $this->intelligence,
                 $this->technique
             );
+
+            if ($with_id) {
+                array_unshift($object, $this->id);
+            }
         }
+
+        return $object;
     }
 
     // -------------------------------------------------------------------------

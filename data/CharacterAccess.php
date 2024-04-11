@@ -125,11 +125,12 @@ class CharacterAccess extends DataAccess {
             return false;
         }
 
-        // send sql request
+        // insert in character model
         $this->prepareQuery('INSERT INTO Characters VALUES (?, ?, ?)');
         $this->executeQuery(array($character->getName(), $character->getElement()->name, $character->getLevel()));
         $this->closeQuery();
 
+        // insert in hissatsu relation table
         foreach ($character->getHissatsu() as $hissatsuData) {
             $this->prepareQuery('INSERT INTO CharacterHissatsu VALUES (?, ?, ?)');
             $this->executeQuery(array($character->getName(), $hissatsuData[1]->getName(), $hissatsuData[0]));
@@ -137,12 +138,28 @@ class CharacterAccess extends DataAccess {
         }
 
         foreach ($character->getStats() as $rank => $stats) {
-            $this->prepareQuery('INSERT INTO Statistics VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-            $this->executeQuery($stats->toArray());
+            // check if statistic entity exist and create it isn't
+            $id_stats = $stats->getID();
+
+            if ($id_stats === -1) {
+                $this->prepareQuery('INSERT INTO Statistics (`kick`, `control`, `pressure`, `physical`, `agility`, `intelligence`, `technique`) VALUES (?, ?, ?, ?, ?, ?, ?)');
+                $this->executeQuery($stats->toArray(false, false));
+                $id_stats = $this->getLastIDInserted();
+
+            }  else {
+                $this->prepareQuery('SELECT COUNT(*) FROM Statistics WHERE id = ?');
+                $this->executeQuery(array($id_stats));
+
+                if ($this->getQueryResult()[0] === 0) {
+                    $this->prepareQuery('INSERT INTO Statistics VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+                    $this->executeQuery($stats->toArray());
+                }
+            }
             $this->closeQuery();
 
+            // insert in statistic relation table
             $this->prepareQuery('INSERT INTO CharacterStats VALUES (?, ?, ?)');
-            $this->executeQuery(array($character->getName(), $stats->getID(), $rank));
+            $this->executeQuery(array($character->getName(), $id_stats, $rank));
             $this->closeQuery();
         }
 

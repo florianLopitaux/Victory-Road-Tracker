@@ -115,7 +115,8 @@ class StuffAccess extends DataAccess {
 
         if ($id_stats === -1) {
             $this->prepareQuery('INSERT INTO Statistics (`kick`, `control`, `pressure`, `physical`, `agility`, `intelligence`, `technique`) VALUES (?, ?, ?, ?, ?, ?, ?)');
-            $this->executeQuery($stuff->getStats()->toArray());
+            $this->executeQuery($stuff->getStats()->toArray(false, false));
+            $id_stats = $this->getLastIDInserted();
 
         }  else {
             $this->prepareQuery('SELECT COUNT(*) FROM Statistics WHERE id = ?');
@@ -129,10 +130,6 @@ class StuffAccess extends DataAccess {
         $this->closeQuery();
 
         // create stuff entity
-        if ($id_stats === -1) {
-            $id_stats = $this->getLastIDInserted();
-        }
-
         $this->prepareQuery('INSERT INTO Stuffs VALUES (?, ?, ?)');
         $this->executeQuery(array($stuff->getName(), $stuff->getCategory()->name, $id_stats));
         $this->closeQuery();
