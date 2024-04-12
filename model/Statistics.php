@@ -219,8 +219,14 @@ class Statistics {
     // -------------------------------------------------------------------------
 
     public static function fromArray(array $entity): Statistics {
+        if (in_array('id', $entity)) {
+            $id = $entity['id'];
+        } else {
+            $id = -1;
+        }
+
         return new Statistics(
-            $entity['id'],
+            $id,
             $entity['kick'],
             $entity['control'],
             $entity['pressure'],

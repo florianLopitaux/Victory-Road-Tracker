@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 """
-:filename: scripts.db_stuffs_insert.py
+:filename: scripts.db_characters_insert.py
 :author:   Florian LOPITAUX
 :contact:  florian.lopitaux@gmail.com
-:summary:  script to fill the Stuffs table of the database from the Excel file of 'Xeleko' YouTube channel.
+:summary:  script to fill the Characters table of the database from the Excel file of 'Xeleko' YouTube channel.
 
 .. _This file is part of Victory-Road-Tracker: https://github.com/florianLopitaux/Victory-Road-Tracker
 ..
@@ -38,8 +38,8 @@ import requests
 
 # ---------------------------------------------------------------------------
 
-API_URL = 'https://victoryroad-tracker.alwaysdata.net/api/stuff'
-CSV_FILE = os.path.join("excel", "db_stuffs_xeleko.csv")
+API_URL = 'https://victoryroad-tracker.alwaysdata.net/api/character'
+CSV_FILE = os.path.join("excel", "db_characters_xeleko.csv")
 
 # ---------------------------------------------------------------------------
 
@@ -59,27 +59,23 @@ def extract_csv_data(filepath: str) -> list[dict]:
     return csv_data
 
 
-def get_category(value: str) -> str | None:
-    match value.lower():
-        case "chaussures":
-            return "BOOTS"
-
-        case "bracelet":
-            return "BRACELET"
-
-        case "pendentif":
-            return "PENDANT"
-
-        case "spécial":
-            return "SPECIAL"
-
-        case _:
-            return None
+def get_rank_from_index(index_value: int) -> str:
+    match index_value % 5:
+        case 0:
+            return "NORMAL"
+        case 1:
+            return "RARE"
+        case 2:
+            return "ADVANCED"
+        case 3:
+            return "TOP"
+        case 4:
+            return "LEGENDARY"
 
 
 def check_stats_cell(value: str) -> int | None:
     if len(value) == 0:
-        return 0
+        return None
 
     try:
         int_value = int(value)
@@ -89,7 +85,7 @@ def check_stats_cell(value: str) -> int | None:
     return int_value
 
 
-def get_stuff_stats(stats_data: dict) -> dict[str, int]:
+def get_character_stats(stats_data: dict) -> dict[str, int]:
     stats = dict()
 
     stats['kick'] = check_stats_cell(stats_data['Frappe'])
@@ -103,34 +99,43 @@ def get_stuff_stats(stats_data: dict) -> dict[str, int]:
     return stats
 
 
+def send_post_request(body: dict) -> None:
+    response = requests.post(API_URL, json=body)
+
+    if response.status_code == 200:
+        print(f"{body['name']} correctly inserted !")
+    else:
+        print(f"Error during inserted this character : {body['name']}")
+        print(f"Status code of the response : {response.status_code}")
+        print(f"Traceback : {response.text}")
+
+
 # ---------------------------------------------------------------------------
 
 
 if __name__ == "__main__":
     data = extract_csv_data(CSV_FILE)
 
-    for row in data:
-        # extract and set item data
-        item = dict()
-        item['name'] = row['Nom Object']
-        item['category'] = get_category(row['Type'])
+    character = dict()
+    for i, row in enumerate(data):
+        # extract and set character data
+        character_name = row['Nom Joueur']
 
-        if item['category'] is None:
-            print("-------------------------------------------------------------------------")
-            print(f"Unknown category item : '{row['Type']}', for this item : {item['name']}")
-            print("-------------------------------------------------------------------------")
-            continue
+        # get base data of character first time we find them
+        if character_name != character.get('name', ""):
+            send_post_request(character)
 
-        item['stats'] = dict()
-        item['stats']['id'] = -1
-        item['stats'].update(get_stuff_stats(row))
+            character = dict()
+            character['name'] = character_name
+            character['element'] = row['Elem.']
+            character['level'] = 30
+            character['stats'] = dict()
+            character['hissatsu'] = [
+                [-1, row['Technique 1']],
+                [-1, row['Technique 2']]
+            ]
 
-        # send post request to insert in the database
-        response = requests.post(API_URL, json=item)
+        rank = get_rank_from_index(i)
 
-        if response.status_code == 200:
-            print(f"{item['name']} correctly inserted !")
-        else:
-            print(f"Error during inserted this item : {item['name']}")
-            print(f"Status code of the response : {response.status_code}")
-            print(f"Traceback : {response.text}")
+        character['stats'][rank] = {'id': -1}
+        character['stats'][rank].update(get_character_stats(row))
