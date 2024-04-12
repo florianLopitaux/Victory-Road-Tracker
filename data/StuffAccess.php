@@ -86,7 +86,7 @@ class StuffAccess extends DataAccess {
         $allStuff = array();
 
         // send sql server
-        $this->prepareQuery('SELECT * FROM Stuffs JOIN Statistics ON Stuff.id_stats = Statistics.id');
+        $this->prepareQuery('SELECT * FROM Stuffs JOIN Statistics ON Stuffs.id_stats = Statistics.id');
         $this->executeQuery(array());
 
         // get the response

@@ -16,11 +16,15 @@ For the purpose of copyright and licensing, this is the official list of contrib
 
 -------------------------------------------------------------------------
 
-Main author, contributor, maintainer, developer:
+Main author, developer, maintainer:
 
     * 2024-: Florian LOPITAUX - https://github.com/florianLopitaux
 
 Contributors:
 
-	* Brigitte BIGI - https://sppas.org/bigi/
-        > The Whakerpy and Whakerexa (not custom) libraries owned by Brigitte Bigi and are maintained by her
+	* Xeleko - https://www.youtube.com/@Xeleko
+        > A French youtube influencer who, with the help of his community, created an excel file that the application
+        used to create its database.
+
+    * Nathan REBOUL, Maxime MONTERIN
+        > UI/UX design of some pages
