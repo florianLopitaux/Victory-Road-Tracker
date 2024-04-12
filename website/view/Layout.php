@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     view/Layout.php
+ * @file     website/view/Layout.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  class to build the html skeleton of all pages.

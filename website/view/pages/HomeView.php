@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     view/pages/HomeView.php
+ * @file     website/view/pages/HomeView.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  Class to build the html of the Home page.

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file     view/BaseView.php
+ * @file     website/view/BaseView.php
  * @author   Florian Lopitaux
  * @version  0.1
  * @summary  Abstract base class for all pages of the website.

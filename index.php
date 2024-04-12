@@ -106,31 +106,44 @@ function websiteRouting(string $requestMethod, array $uri) : void {
     }
 
     $controllerCalled = "webController\\$controllerName" . 'Controller';
+    array_shift($uri);  // removed controller name in parameters array
 
     // check if the controller exists
     if (class_exists($controllerCalled)) {
         $controller = new $controllerCalled($requestMethod);
-        $statusCode = $controller->processRequest(array_slice($uri, 1), $_POST);
 
-        http_response_code($statusCode);
+        if (count($uri) === 0 || strlen($uri[0]) === 0) {
+            $statusCode = $controller->defaultAction();
 
-    // controller doesn't find, bad uri routing
-    } else {
-        http_response_code(404);
+        } else {
+            $methodAction = $uri[0] . 'Action';
+            array_shift($uri);  // removed action name method in parameters array
+
+            if (method_exists($controller, $methodAction)) {
+                $statusCode = $controller->$methodAction($uri);
+            } else {  // controller doesn't find, bad uri routing
+                $statusCode = 404;
+            }
+        }
+    } else {  // controller doesn't find, bad uri routing
+        $statusCode = 404;
+    }
+
+    http_response_code($statusCode);
+    if ($statusCode === 404) {
         echo '
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Victory Road Tracker</title>
-            </head>
-            <body>
-                <h1>404 Error ! The server doesn\'t found the route specified !</h1>
-            </body>
-            </html>
-            ';
-        die();
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Victory Road Tracker</title>
+        </head>
+        <body>
+            <h1>404 Error ! The server doesn\'t found the route specified !</h1>
+        </body>
+        </html>
+        ';
     }
 }
 
