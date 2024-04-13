@@ -63,6 +63,13 @@ abstract class BaseService {
     // -------------------------------------------------------------------------
 
     public function processRequest(array $uri, array $post): int {
+        // check the bearer authorization token for some request methods
+        if ($this->requestMethod === 'POST' || $this->requestMethod === 'DELETE') {
+            echo json_encode(array('response' => 'This request needs the bearer authorization token !'), JSON_PRETTY_PRINT);
+            http_response_code(401);
+            die();
+        }
+
         return 200;
     }
 }

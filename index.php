@@ -81,10 +81,15 @@ function apiRouting(string $requestMethod, array $uri) : void {
     $serviceName = strtoupper(substr($uri[0], 0, 1)) . substr($uri[0], 1);
     $serviceCalled = "apiService\\$serviceName" . 'Service';
 
+    array_shift($uri);
+    for ($i = 0; $i < count($uri); $i++) {
+        $uri[$i] = urldecode($uri[$i]);
+    }
+
     // check if the controller exists
     if (class_exists($serviceCalled)) {
         $service = new $serviceCalled($config, $requestMethod, $headerToken);
-        $statusCode = $service->processRequest(array_slice($uri, 1), $_POST);
+        $statusCode = $service->processRequest($uri, $_POST);
 
         http_response_code($statusCode);
 

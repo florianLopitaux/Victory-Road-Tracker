@@ -64,13 +64,8 @@ class HissatsuService extends BaseService {
     // -------------------------------------------------------------------------
 
     public function processRequest(array $uri, array $post): int {
+        parent::processRequest($uri, $post);
         $response = array();
-
-        // check the bearer authorization token for some request methods
-        if ($this->requestMethod === 'POST' || $this->requestMethod === 'DELETE') {
-            echo json_encode(array('response' => 'This request needs the bearer authorization token !'), JSON_PRETTY_PRINT);
-            return 401;
-        }
 
         // get the method name to called
         $methodCalled = substr($this->requestMethod, 0, 1) . substr(strtolower($this->requestMethod), 1);
@@ -156,7 +151,7 @@ class HissatsuService extends BaseService {
                 $response['content'] = $uri[0] . ' doesn\'t found in the database.';
             } else {
                 $response['code'] = 200;
-                $response['content'] = $hissatsu->toArray();
+                $response['content'] = $hissatsu->toArray(true);
             }
 
         } else if (sizeof($uri) === 2) {
@@ -185,7 +180,7 @@ class HissatsuService extends BaseService {
                     $response['content'] = $this->transformToArray($hissatsu);
                 }
             } else if ($uri[0] === 'characters') {
-                $characterAccess = new CharacterAccess($this->config['db_identifier'], $this->config['db_identifier']);
+                $characterAccess = new CharacterAccess($this->config['db_identifier'], $this->config['db_password']);
                 $characters = $this->dbHissatsu->getHissatsuOwners($characterAccess, $uri[1]);
 
                 $response['code'] = 200;
@@ -209,7 +204,7 @@ class HissatsuService extends BaseService {
         $responseContent = array();
 
         foreach ($tab as $current) {
-            $responseContent[] = $current->toArray();
+            $responseContent[] = $current->toArray(true);
         }
 
         return $responseContent;

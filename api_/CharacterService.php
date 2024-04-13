@@ -62,13 +62,8 @@ class CharacterService extends BaseService {
     // -------------------------------------------------------------------------
 
     public function processRequest(array $uri, array $post): int {
+        parent::processRequest($uri, $post);
         $response = array();
-
-        // check the bearer authorization token for some request methods
-        if ($this->requestMethod === 'POST' || $this->requestMethod === 'DELETE') {
-            echo json_encode(array('response' => 'This request needs the bearer authorization token !'), JSON_PRETTY_PRINT);
-            return 401;
-        }
 
         // get the method name to called
         $methodCalled = substr($this->requestMethod, 0, 1) . substr(strtolower($this->requestMethod), 1);
