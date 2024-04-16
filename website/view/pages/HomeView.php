@@ -46,8 +46,12 @@ final class HomeView extends BaseView {
 
         // set the html content
         $this->content = '<main>
-            <h1>Bienvenue sur Inazuma Eleven Victory Road Tracker !</h1>
-            <span>choisissez votre outil</span>
+            <h1 class="font-black">Bienvenue sur Inazuma Eleven Victory Road Tracker !</h1>
+            <span class="font-bold">
+                <img id="left" class="lightning" src="assets/img/lightning.png" alt="éclair pour décorer le texte">
+                Choisissez votre outil
+                <img id="right" class="lightning" src="assets/img/lightning.png" alt="éclair pour décorer le texte">
+            </span>
             
             <section id="menu-buttons">
                 <a href="/teambuilder">Team Builder</a>
