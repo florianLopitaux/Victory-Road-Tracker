@@ -59,6 +59,20 @@ final class HomeView extends BaseView {
                 <a href="/database">Base de données</a>
                 <a href="/articles">Articles</a>
             </section>
+
+            <!-- script for pages under developpement -->
+            <script type="application/javascript">
+                let menu = document.getElementById("menu-buttons");
+
+                Array.from(menu.children).forEach(child => {
+                    if (child.tagName === "A") {
+                        child.onclick = (event) => {
+                            event.preventDefault();
+                            alert("Cette page est en cours de développement.");
+                        }
+                    }
+                });
+            </script>
         </main>';
     }
 }
