@@ -30,7 +30,7 @@
  */
 
 use apiService\{CharacterService, HissatsuService, StuffService};
-use webController\{HomeController};
+use webController\{DatabaseController, HomeController};
 
 // -------------------------------------------------------------------------
 
@@ -41,6 +41,7 @@ function loadAPIDependencies() : void {
 }
 
 function loadWebSiteDependencies() : void {
+    require_once 'website/controller/DatabaseController.php';
     require_once 'website/controller/HomeController.php';
 }
 

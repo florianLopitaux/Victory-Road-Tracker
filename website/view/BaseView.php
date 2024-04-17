@@ -53,7 +53,7 @@ abstract class BaseView {
         $this->layout = $layout;
 
         // set default css present in all pages
-        $this->styles = array('global', 'header', 'footer');
+        $this->styles = array('global');
     }
 
 
@@ -62,15 +62,24 @@ abstract class BaseView {
      * This method is used to display the html content of the web page.
      * It called the display method of the layout object with parameters
      *
-     * @return void
+     * @param bool $has_header Boolean value to know if we have to display the header in the current page.
+     *                         True by default
+     * @param bool $has_footer Boolean value to know if we have to display the footer in the current page.
+     *                         True by default
      */
-    public function display(): void {
+    public function display(bool $has_header = true, bool $has_footer = true): void {
         // append the header and footer in the page
-        $header = file_get_contents('website/view/html/header.html');
-        $this->content = $header . $this->content;
+        if ($has_header) {
+            $header = file_get_contents('website/view/html/header.html');
+            $this->content = $header . $this->content;
+            $this->styles[] = 'header';
+        }
 
-        $footer = file_get_contents('website/view/html/footer.html');
-        $this->content = $this->content . $footer;
+        if ($has_footer) {
+            $footer = file_get_contents('website/view/html/footer.html');
+            $this->content = $this->content . $footer;
+            $this->styles[] = 'footer';
+        }
 
         // create all link elements for css files
         $stylesHTML = '';
