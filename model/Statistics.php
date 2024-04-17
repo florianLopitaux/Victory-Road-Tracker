@@ -212,7 +212,47 @@ class Statistics {
         return $sum;
     }
 
-    // TODO: compute AT Shoot, AT Focus, ...
+    // -------------------------------------------------------------------------
+
+    public function computeATShoot(): int {
+        return $this->kick + $this->control;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeATFocus(): int {
+        return $this->control + $this->technique;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeATDuel(): int {
+        return $this->physical + $this->intelligence;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeDEFWall(): int {
+        return $this->pressure + $this->physical;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeDEFFocus(): int {
+        return $this->intelligence + $this->technique;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeDEFDuel(): int {
+        return $this->pressure + $this->intelligence;
+    }
+
+    // -------------------------------------------------------------------------
+
+    public function computeGK(): int {
+        return $this->physical + $this->agility;
+    }
 
     // -------------------------------------------------------------------------
     // STATIC METHODS
