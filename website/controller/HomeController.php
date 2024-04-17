@@ -31,8 +31,9 @@
 
 namespace webController;
 
-use view\HomeView;
+use view\{HomeView, Layout};
 require_once 'website/view/pages/HomeView.php';
+require_once 'website/view/Layout.php';
 
 class HomeController {
 
@@ -58,7 +59,7 @@ class HomeController {
     // -------------------------------------------------------------------------
 
     public function defaultAction(): int {
-        $view = new HomeView('/website/view/html/layout.html');
+        $view = new HomeView(new Layout('website/view/html/layout.html'));
         $view->display();
 
         return 200;

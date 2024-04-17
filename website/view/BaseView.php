@@ -66,10 +66,10 @@ abstract class BaseView {
      */
     public function display(): void {
         // append the header and footer in the page
-        $header = file_get_contents('/view/html/header.html');
+        $header = file_get_contents('website/view/html/header.html');
         $this->content = $header . $this->content;
 
-        $footer = file_get_contents('/view/html/footer.html');
+        $footer = file_get_contents('website/view/html/footer.html');
         $this->content = $this->content . $footer;
 
         // create all link elements for css files
