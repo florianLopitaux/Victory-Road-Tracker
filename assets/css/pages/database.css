@@ -1,0 +1,118 @@
+html {
+    background-color: darkslategray;
+}
+
+main {
+    position: relative;
+    min-height: 70vh;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+main a#back-link {
+    position: absolute;
+    top: .5vh;
+    left: .5vw;
+
+    width: auto;
+    height: 3vh;
+
+    animation: 2s ease-out 0s 1 onLoadSpawn;
+    transition: transform .5s;
+}
+
+main a#back-link:hover {
+    transform: scale(1.1);
+}
+
+section#menu-section {
+    padding: 3vw;
+    display: flex;
+
+    animation: 2s ease-out 0s 1 onLoadSpawn;
+}
+
+section#menu-section button {
+    padding: .5rem;
+    cursor: pointer;
+
+    width: 5vw;
+
+    background-color: #fff;
+    border: none;
+
+    color: black;
+}
+
+section#menu-section button#selected {
+    background: linear-gradient(to right, #80FF80, #E8FF02);
+}
+
+button.left-btn {
+    border-radius: .5vw 0 0 .5vw;
+}
+
+button.middle-btn {
+    position: relative;
+}
+
+button.middle-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 1px;
+    height: 100%;
+
+    background-color: black;
+}
+
+button.middle-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px;
+
+    width: 1px;
+    height: 100%;
+
+    background-color: black;
+}
+
+button.right-btn {
+    border-radius: 0 .5vw .5vw 0;
+}
+
+table {
+    animation: 1s ease-out 0s 1 slideInFromBottom;
+    margin-bottom: 5vh;
+}
+
+th, td {
+    border: 1px solid rgb(160 160 160);
+    padding: 8px 10px;
+}
+
+th[scope="col"] {
+    background-color: #505050;
+    color: #fff;
+}
+
+th[scope="row"] {
+    background-color: #d6ecd4;
+}
+
+tr:nth-of-type(odd) td {
+    background-color: #eee;
+}
+
+tr:nth-of-type(even) td {
+    background-color: white;
+}
+
+th.sortable {
+    cursor: pointer;
+}

@@ -46,7 +46,56 @@ final class DatabaseView extends BaseView {
 
         // set the html content
         $this->content = '<main>
-            
+            <a id="back-link" href="/home">
+                <img src="assets/img/back_arrow.png" alt="Flèche en arrière pour revenir à la page précédente.">
+            </a>
+
+            <section id="menu-section">
+                <button id="selected" class="left-btn">Personnages</button>
+                <button class="middle-btn">Techniques</button>
+                <button class="right-btn">Objets</button>
+            </section>
+
+            <table id="players">
+            <thead>
+            <tr>
+                <th scope="col" rowspan="2">Name</th>
+                <th scope="col" rowspan="2">Élément</th>
+                <th scope="col" colspan="7">Statistiques</th>
+                <th scope="col" rowspan="2" class="sortable" onclick="sortTable(8)">Total <span class="arrow">=</span> </th>
+            </tr>
+            <tr>
+                <th scope="col" class="sortable" onclick="sortTable(1)">Frappe (ATT) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(2)">Contrôle (ATT/MIL) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(3)">Pression (DEF) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(4)">Physique (GAR/DEF) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(5)">Agilité (GAR) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(6)">Intelligence (DEF/MIL) <span class="arrow">=</span> </th>
+                <th scope="col" class="sortable" onclick="sortTable(7)">Technique (MIL) <span class="arrow">=</span> </th>
+            </tr>
+            </thead>
+
+            <tbody>';
+
+        // TODO : foreach data in parameter of the constructor create a row with stats
+        // example of character row
+        $this->content = $this->content . '
+                <tr>
+                    <th scope="row"><a href="mark_evans.html">Mark Evans</a></th>
+                    <td>Terre</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>50</td>
+                    <td>350</td>
+                </tr>
+        ';
+
+        $this->content = $this->content . '
+            </tbody>
         </main>';
     }
 }
